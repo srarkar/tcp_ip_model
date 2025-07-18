@@ -12,6 +12,12 @@ class EtherType(Enum):
     IPv4 = 2048
     ARP = 2054
 
+def print_report(num_arp_packets, num_ip_packets):
+    print(f"Number of packets sniffed: {num_arp_packets + num_ip_packets}")
+    print(f"Number of ARP Packets: {num_arp_packets}")
+    print(f"Number of IPv4 Packets: {num_ip_packets}")
+    print(f"Potential ARP Spoofing at the following IP Addresses: {list(malicious_ip)}")
+    print(f"Potential IP Spoofing at the MAC Addresses: ")
 
 interfaces = netifaces.interfaces()
 
@@ -34,11 +40,18 @@ match os:
 # apply "arp" filter -- access frame[Ether].type and check if it is equal to x0806 (ARP)
 # parse delivered packet, originally a buffer of raw bytes
 ip_to_mac = {}
+mac_to_ip = {}
+
+malicious_ip = {}
+malicious_mac = {}
+
+num_arp_packets = 0
+num_ip_packets = 0
 while(True):
     packets = scapy.sniff(count=1, iface = iface)
     current_frame = packets[0]
     if current_frame["Ether"].type == EtherType.ARP.value: # ARP Packet
-
+        num_arp_packets += 1
         # Access fields and place into locals
         sender_mac_addr = current_frame['ARP'].hwsrc
         sender_ip_addr = current_frame['ARP'].psrc
@@ -60,6 +73,8 @@ while(True):
                 for hwsrc in ip_to_mac[sender_ip_addr]:
                     print("\t" + hwsrc)
 
+                malicious_ip.add(sender_ip_addr)
+
                 affirmatives = {"yes", "ye", 'y', "yurr", "yeah", "indeed"}
                 print(f"Continue sniffing?")
                 check_continue = input()
@@ -68,6 +83,11 @@ while(True):
                 else:
                     break
     elif current_frame["Ether"].type == EtherType.IPv4.value: # IPv4 packet
+        num_ip_packets += 1
         print("IPv4 Packet Found")
         # TODO: add some prints here for IP packet fields
+    
+
+
     time.sleep(0.25)
+print_report(num_arp_packets, num_ip_packets, malicious_ip, malicious_mac)
