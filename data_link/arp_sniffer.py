@@ -15,12 +15,18 @@ class EtherType(Enum):
     IPv4 = 2048
     ARP = 2054
 
+affirmatives = {"yes", "ye", 'y', "yurr", "yeah", "yup", "indeed"}
+negatives = {"no", "n", "no thanks", "naw", "nope", "stop", "quit"}
+
 def print_report(num_arp_packets, num_ip_packets, malicious_ips, malicious_macs):
-    print(f"Number of packets sniffed: {num_arp_packets + num_ip_packets}")
-    print(f"Number of ARP Packets: {num_arp_packets}")
-    print(f"Number of IPv4 Packets: {num_ip_packets}")
-    print(f"Potential ARP Spoofing at the following IP Addresses: {list(malicious_ips)}")
-    print(f"Potential IP Spoofing at the MAC Addresses: ")
+    print("Summary of Network Sniffing:")
+    print(f"\tNumber of packets sniffed: {num_arp_packets + num_ip_packets}")
+    print(f"\tNumber of ARP Packets: {num_arp_packets}")
+    print(f"\tNumber of IPv4 Packets: {num_ip_packets}")
+    if malicious_ips:
+        print(f"\tPotential ARP Spoofing at the following IP Addresses: {', '.join(malicious_ips)}")
+    if malicious_macs:
+        print(f"\tPotential IP Spoofing at the following MAC Addresses: {', '.join(malicious_macs)}")
 
 def detect_enter_keypress():
     if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
@@ -61,6 +67,11 @@ num_arp_packets = 0
 num_ip_packets = 0
 
 print("Commencing network sniffing...")
+
+with open('nose_ascii.txt', 'r') as file:
+    for line in file:
+        print(line.strip())
+
 print("Press ENTER at any point to terminate execution")
 
 while(True):
@@ -74,13 +85,17 @@ while(True):
         sender_mac_addr = current_frame['ARP'].hwsrc
         sender_ip_addr = current_frame['ARP'].psrc
 
-        # dest_mac_addr = 
-        # dest_ip_addr = 
+        dest_mac_addr = current_frame['ARP'].hwsrc
+        dest_ip_addr = current_frame['ARP'].pdst
 
         # print fields
         print("ARP Packet Found")
-        print(f"Sender IP Address: {sender_ip_addr}")
-        print(f"Sender MAC Address: {sender_mac_addr}")
+
+        print(f"\tSender IP Address: {sender_ip_addr}")
+        print(f"\tSender MAC Address: {sender_mac_addr}")
+
+        print(f"\tDestination IP Address: {dest_ip_addr}")
+        print(f"\tDestination MAC Address: {dest_mac_addr}")
 
         # maintain dictionary of ip addrs mapped to MAC addresses
         if sender_ip_addr not in ip_to_mac:
@@ -119,8 +134,10 @@ while(True):
         num_ip_packets += 1
         print("IPv4 Packet Found")
         # TODO: add some prints here for IP packet fields
-    
+    if detect_enter_keypress():
+        break
+    time.sleep(0.1)
 
-
-    time.sleep(0.25)
 print_report(num_arp_packets, num_ip_packets, malicious_ip, malicious_mac)
+
+
