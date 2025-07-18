@@ -19,13 +19,13 @@ os = platform.uname().system
 match os:
     case "Darwin":
         print("Detected OS: MacOS / Darwin")
-        # Use "en0" for Ethernet/WiFi frames
+        iface = "en0"
     case "Linux":
         print("Detected OS: Linux")
-        # Use "eth*" for ethernet and "wlan*" for WiFi
+        iface = "eth0"
     case "Windows":
         print("Detected OS: Windows")
-        # Npcap?
+        iface = "Ethernet"
     case _:
         raise NotImplementedError("Unsupported or unknown operating system.")
     
@@ -35,7 +35,7 @@ match os:
 # parse delivered packet, originally a buffer of raw bytes
 ip_to_mac = {}
 while(True):
-    packets = scapy.sniff(count=1)
+    packets = scapy.sniff(count=1, iface = iface)
     current_frame = packets[0]
     if current_frame["Ether"].type == EtherType.ARP.value: # ARP Packet
 
@@ -59,17 +59,15 @@ while(True):
                 print(f"For IP address {sender_ip_addr}, the following MAC address mappings have been detected:")
                 for hwsrc in ip_to_mac[sender_ip_addr]:
                     print("\t" + hwsrc)
-            
-                affirmatives = {"yes", "ye", "yurr", "yeah", "indeed"}
+
+                affirmatives = {"yes", "ye", 'y', "yurr", "yeah", "indeed"}
                 print(f"Continue sniffing?")
                 check_continue = input()
                 if check_continue in affirmatives:
                     continue
                 else:
                     break
-
-        time.sleep(0.25)
     elif current_frame["Ether"].type == EtherType.IPv4.value: # IPv4 packet
         print("IPv4 Packet Found")
-        # print(current_frame)
-    # time.sleep(0.5) # read a packet every half second
+        # TODO: add some prints here for IP packet fields
+    time.sleep(0.25)
