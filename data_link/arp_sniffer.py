@@ -75,10 +75,10 @@ with open('nose_ascii.txt', 'r') as file:
 print("Press ENTER at any point to terminate execution")
 
 while(True):
-    if detect_enter_keypress():
-        break
     packets = scapy.sniff(count=1, iface = iface)
     current_frame = packets[0]
+    if detect_enter_keypress():
+        break
     if current_frame["Ether"].type == EtherType.ARP.value: # ARP Packet
         num_arp_packets += 1
         # Access fields and place into locals

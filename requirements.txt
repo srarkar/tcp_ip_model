@@ -1,4 +1,0 @@
-netifaces 
-scapy
-keyboard
-
