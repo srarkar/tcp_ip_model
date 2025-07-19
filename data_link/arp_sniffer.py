@@ -18,6 +18,13 @@ class EtherType(Enum):
 affirmatives = {"yes", "ye", 'y', "yurr", "yeah", "yup", "indeed"}
 negatives = {"no", "n", "no thanks", "naw", "nope", "stop", "quit"}
 
+def detect_enter_keypress():
+    if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
+        line = sys.stdin.readline()
+        if line.strip() == "":
+            return True
+    return False
+
 def print_report(num_arp_packets, num_ip_packets, malicious_ips, malicious_macs):
     print("Summary of Network Sniffing:")
     print(f"\tNumber of packets sniffed: {num_arp_packets + num_ip_packets}")
@@ -28,12 +35,6 @@ def print_report(num_arp_packets, num_ip_packets, malicious_ips, malicious_macs)
     if malicious_macs:
         print(f"\tPotential IP Spoofing at the following MAC Addresses: {', '.join(malicious_macs)}")
 
-def detect_enter_keypress():
-    if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
-        line = sys.stdin.readline()
-        if line.strip() == "":
-            return True
-    return False
 
 
 interfaces = netifaces.interfaces()
@@ -80,7 +81,7 @@ while(True):
     if detect_enter_keypress():
         break
     if current_frame["Ether"].type == EtherType.ARP.value: # ARP Packet
-        num_arp_packets += 1
+
         # Access fields and place into locals
         sender_mac_addr = current_frame['ARP'].hwsrc
         sender_ip_addr = current_frame['ARP'].psrc
@@ -97,6 +98,8 @@ while(True):
         print(f"\tDestination IP Address: {dest_ip_addr}")
         print(f"\tDestination MAC Address: {dest_mac_addr}")
 
+        num_arp_packets += 1
+
         # maintain dictionary of ip addrs mapped to MAC addresses
         if sender_ip_addr not in ip_to_mac:
             ip_to_mac[sender_ip_addr] = {sender_mac_addr}
@@ -111,11 +114,8 @@ while(True):
 
                 malicious_ip.add(sender_ip_addr)
 
-
                 # at this point, we've found a potential case of ARP Spoofing
                 # provide user choice to continue sniffing or break early
-                affirmatives = {"yes", "ye", 'y', "yurr", "yeah", "yup", "indeed"}
-                negatives = {"no", "n", "no thanks", "naw", "nope", "stop", "quit"}
                 print(f"Continue sniffing?")
                 exit_now = False
                 while(True):
@@ -130,13 +130,23 @@ while(True):
 
                 if exit_now: 
                     break
+
     elif current_frame["Ether"].type == EtherType.IPv4.value: # IPv4 packet
-        num_ip_packets += 1
+
+        # Access fields and place into locals
+        sender_ip = current_frame["IP"].src
+        dest_ip = current_frame["IP"].dst
+
+
         print("IPv4 Packet Found")
-        # TODO: add some prints here for IP packet fields
+        print(f"Sender IP Address: {sender_ip}")
+        print(f"Destination IP Address: {dest_ip}")
+        num_ip_packets += 1
+
+
+    time.sleep(0.1)
     if detect_enter_keypress():
         break
-    time.sleep(0.1)
 
 print_report(num_arp_packets, num_ip_packets, malicious_ip, malicious_mac)
 
