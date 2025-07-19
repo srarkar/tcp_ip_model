@@ -132,15 +132,24 @@ while(True):
                     break
 
     elif current_frame["Ether"].type == EtherType.IPv4.value: # IPv4 packet
-
+        protocol = None
         # Access fields and place into locals
         sender_ip = current_frame["IP"].src
         dest_ip = current_frame["IP"].dst
+        if current_frame.getlayer(scapy.TCP):
+            protocol = "TCP"
+        elif current_frame.getlayer(scapy.UDP):
+            protocol = "UDP"
 
 
         print("IPv4 Packet Found")
         print(f"Sender IP Address: {sender_ip}")
         print(f"Destination IP Address: {dest_ip}")
+        if protocol:
+            print(f"Protocol: {protocol}")
+        
+
+        
         num_ip_packets += 1
 
 
