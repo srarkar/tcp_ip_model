@@ -67,7 +67,7 @@ ip_to_mac = {}
 seen_sender_ips = {}
 seen_dest_ips = {}
 
-malicious_ip = set()
+malicious_ips = set()
 ddos_ip_send = set()
 ddos_ip_dest = set()
 
@@ -82,7 +82,7 @@ with open('nose_ascii.txt', 'r') as file:
 
 print("Press ENTER at any point to terminate execution")
 
-timer = 30
+start_time = time.time()
 while(True):
     packets = scapy.sniff(count=1, iface = iface)
     current_frame = packets[0]
@@ -94,7 +94,7 @@ while(True):
         sender_mac_addr = current_frame['ARP'].hwsrc
         sender_ip_addr = current_frame['ARP'].psrc
 
-        dest_mac_addr = current_frame['ARP'].hwsrc
+        dest_mac_addr = current_frame['ARP'].hwdst
         dest_ip_addr = current_frame['ARP'].pdst
 
         # print fields
@@ -120,10 +120,11 @@ while(True):
                 for hwsrc in ip_to_mac[sender_ip_addr]:
                     print("\t" + hwsrc)
 
-                malicious_ip.add(sender_ip_addr)
+                malicious_ips.add(sender_ip_addr)
 
                 # at this point, we've found a potential case of ARP Spoofing
                 # provide user choice to continue sniffing or break early
+                limit = 5
                 print(f"Continue sniffing?")
                 exit_now = False
                 while(True):
@@ -134,7 +135,12 @@ while(True):
                         exit_now = True
                         break
                     else:
+                        if limit <= 0:
+                            print("Too many invalid attempts. Exiting...")
+                            exit_now = True
+                            break
                         print("Please answer yes or no.")
+                        limit -= 1
 
                 if exit_now: 
                     break
@@ -169,23 +175,53 @@ while(True):
             print(f"Protocol: {protocol}")
         
         num_ip_packets += 1
-        if timer <= 0:
-            timer = 30
-            for ip, freq in seen_sender_ips:
+        sent_found = False
+        dest_found = False
+
+        if time.time() - start_time >= 30:
+            start_time = time.time()
+            for ip, freq in seen_sender_ips.items():
                 if freq > MAX_IP:
                     ddos_ip_send.add(ip)
+                    sent_found = True
             for ip, freq in seen_dest_ips:
                 if freq > MAX_IP:
                     ddos_ip_dest.add(ip)
-        
-        print(f"Over 1000 packets per minute have been detected being sent from IP Address {ip}")
+                    dest_found = True
+            seen_sender_ips = {}
+            seen_dest_ips = {}
 
+            if sent_found:
+                print(f"Over 1000 packets per minute have been detected being sent from at least one IP Address.")
+            
+            if dest_found:
+                print(f"Over 1000 packets per minute have been detected being sent to a single IP Address, a potential sign of a DDoS attack.")
 
+            # provide user choice to continue sniffing or break early
+            if sent_found or dest_found:
+                print(f"You may continue sniffing or break to view network summary and investigate potential IP spoofing or DDoS attack")
+                print(f"Continue sniffing? Please say 'yes' or 'no'")
 
-    timer -= 1
+                limit = 5
+                exit_now = False
+                while(True):
+                    check_continue = input()
+                    if check_continue in affirmatives:
+                        break
+                    elif check_continue in negatives:
+                        exit_now = True
+                        break
+                    else:
+                        if limit <= 0:
+                            exit_now = True
+                            print("Too many invalid attempts. Exiting...")
+                            break
+                        print("Please answer yes or no.")
+                    limit -= 1
+
     if detect_enter_keypress():
         break
 
-print_report(num_arp_packets, num_ip_packets, malicious_ip, ddos_ip_send, ddos_ip_dest)
+print_report(num_arp_packets, num_ip_packets, malicious_ips, ddos_ip_send, ddos_ip_dest)
 
 
