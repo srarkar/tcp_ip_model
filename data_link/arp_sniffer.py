@@ -15,8 +15,11 @@ class EtherType(Enum):
     IPv4 = 2048
     ARP = 2054
 
+MAX_IP = 550
+
 affirmatives = {"yes", "ye", 'y', "yurr", "yeah", "yup", "indeed"}
 negatives = {"no", "n", "no thanks", "naw", "nope", "stop", "quit"}
+
 
 def detect_enter_keypress():
     if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
@@ -25,15 +28,17 @@ def detect_enter_keypress():
             return True
     return False
 
-def print_report(num_arp_packets, num_ip_packets, malicious_ips, malicious_macs):
+def print_report(num_arp_packets, num_ip_packets, malicious_ips, ddos_ip_send, ddos_ip_dest):
     print("Summary of Network Sniffing:")
     print(f"\tNumber of packets sniffed: {num_arp_packets + num_ip_packets}")
     print(f"\tNumber of ARP Packets: {num_arp_packets}")
     print(f"\tNumber of IPv4 Packets: {num_ip_packets}")
     if malicious_ips:
         print(f"\tPotential ARP Spoofing at the following IP Addresses: {', '.join(malicious_ips)}")
-    if malicious_macs:
-        print(f"\tPotential IP Spoofing at the following MAC Addresses: {', '.join(malicious_macs)}")
+    if ddos_ip_send:
+        print(f"\tPotential DDoS Attack from following IP Addresses: {', '.join(ddos_ip_send)}")
+    if ddos_ip_dest:
+        print(f"\tPotential DDoS Victim at following IP Addresses: {', '.join(ddos_ip_dest)}")
 
 
 
@@ -59,10 +64,12 @@ match os:
 # apply "arp" filter -- access frame[Ether].type and check if it is equal to x0806 (ARP)
 # parse delivered packet, originally a buffer of raw bytes
 ip_to_mac = {}
-mac_to_ip = {}
+seen_sender_ips = {}
+seen_dest_ips = {}
 
 malicious_ip = set()
-malicious_mac = set()
+ddos_ip_send = set()
+ddos_ip_dest = set()
 
 num_arp_packets = 0
 num_ip_packets = 0
@@ -75,6 +82,7 @@ with open('nose_ascii.txt', 'r') as file:
 
 print("Press ENTER at any point to terminate execution")
 
+timer = 30
 while(True):
     packets = scapy.sniff(count=1, iface = iface)
     current_frame = packets[0]
@@ -135,7 +143,19 @@ while(True):
         protocol = None
         # Access fields and place into locals
         sender_ip = current_frame["IP"].src
+        if sender_ip in seen_sender_ips:
+            seen_sender_ips[sender_ip] += 1
+        else:
+            seen_sender_ips[sender_ip] = 1
+
         dest_ip = current_frame["IP"].dst
+        if dest_ip in seen_dest_ips:
+            seen_dest_ips[dest_ip] += 1
+        else:
+            seen_dest_ips[dest_ip] = 1
+    
+
+
         if current_frame.getlayer(scapy.TCP):
             protocol = "TCP"
         elif current_frame.getlayer(scapy.UDP):
@@ -148,15 +168,24 @@ while(True):
         if protocol:
             print(f"Protocol: {protocol}")
         
-
-        
         num_ip_packets += 1
+        if timer <= 0:
+            timer = 30
+            for ip, freq in seen_sender_ips:
+                if freq > MAX_IP:
+                    ddos_ip_send.add(ip)
+            for ip, freq in seen_dest_ips:
+                if freq > MAX_IP:
+                    ddos_ip_dest.add(ip)
+        
+        print(f"Over 1000 packets per minute have been detected being sent from IP Address {ip}")
 
 
-    time.sleep(0.1)
+
+    timer -= 1
     if detect_enter_keypress():
         break
 
-print_report(num_arp_packets, num_ip_packets, malicious_ip, malicious_mac)
+print_report(num_arp_packets, num_ip_packets, malicious_ip, ddos_ip_send, ddos_ip_dest)
 
 
