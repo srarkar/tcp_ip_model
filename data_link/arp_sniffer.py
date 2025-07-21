@@ -5,6 +5,7 @@ import netifaces
 import scapy.all as scapy
 from scapy.all import Ether, ARP
 import platform
+import os
 
 import time
 import sys
@@ -15,11 +16,26 @@ class EtherType(Enum):
     IPv4 = 2048
     ARP = 2054
 
-MAX_IP = 550
+MAX_IP = 500
 
 affirmatives = {"yes", "ye", 'y', "yurr", "yeah", "yup", "indeed"}
 negatives = {"no", "n", "no thanks", "naw", "nope", "stop", "quit"}
 
+def continue_or_break():
+    limit = 5
+
+    while(True):
+        check_continue = input()
+        if check_continue in affirmatives:
+            return False
+        elif check_continue in negatives:
+            return True
+        else:
+            if limit <= 0:
+                print("Too many invalid attempts. Exiting...")
+                return False
+            print("Please answer yes or no.")
+            limit -= 1
 
 def detect_enter_keypress():
     if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
@@ -44,8 +60,8 @@ def print_report(num_arp_packets, num_ip_packets, malicious_ips, ddos_ip_send, d
 
 interfaces = netifaces.interfaces()
 
-os = platform.uname().system
-match os:
+operating_system = platform.uname().system
+match operating_system:
     case "Darwin":
         print("Detected OS: MacOS / Darwin")
         iface = "en0"
@@ -57,6 +73,9 @@ match os:
         iface = "Ethernet"
     case _:
         raise NotImplementedError("Unsupported or unknown operating system.")
+    
+if operating_system != "Windows" and os.geteuid() != 0:
+    print("Warning: You may need to run this script with sudo / root permission.")
 
     
     
@@ -104,7 +123,7 @@ while(True):
         print(f"\tSender MAC Address: {sender_mac_addr}")
 
         print(f"\tDestination IP Address: {dest_ip_addr}")
-        print(f"\tDestination MAC Address: {dest_mac_addr}")
+        print(f"\tDestination MAC Address: {dest_mac_addr}\n")
 
         num_arp_packets += 1
 
@@ -125,24 +144,12 @@ while(True):
                 # at this point, we've found a potential case of ARP Spoofing
                 # provide user choice to continue sniffing or break early
                 limit = 5
+                print(f"You may continue sniffing or break to view network summary and investigate potential ARP Spoofing")
+                time.sleep(0.1)
                 print(f"Continue sniffing?")
-                exit_now = False
-                while(True):
-                    check_continue = input()
-                    if check_continue in affirmatives:
-                        break
-                    elif check_continue in negatives:
-                        exit_now = True
-                        break
-                    else:
-                        if limit <= 0:
-                            print("Too many invalid attempts. Exiting...")
-                            exit_now = True
-                            break
-                        print("Please answer yes or no.")
-                        limit -= 1
 
-                if exit_now: 
+                exit_now = continue_or_break()
+                if exit_now:
                     break
 
     elif current_frame["Ether"].type == EtherType.IPv4.value: # IPv4 packet
@@ -169,10 +176,10 @@ while(True):
 
 
         print("IPv4 Packet Found")
-        print(f"Sender IP Address: {sender_ip}")
-        print(f"Destination IP Address: {dest_ip}")
+        print(f"\tSender IP Address: {sender_ip}")
+        print(f"\tDestination IP Address: {dest_ip}")
         if protocol:
-            print(f"Protocol: {protocol}")
+            print(f"\tProtocol: {protocol}\n")
         
         num_ip_packets += 1
         sent_found = False
@@ -184,7 +191,7 @@ while(True):
                 if freq > MAX_IP:
                     ddos_ip_send.add(ip)
                     sent_found = True
-            for ip, freq in seen_dest_ips:
+            for ip, freq in seen_dest_ips.items():
                 if freq > MAX_IP:
                     ddos_ip_dest.add(ip)
                     dest_found = True
@@ -200,24 +207,12 @@ while(True):
             # provide user choice to continue sniffing or break early
             if sent_found or dest_found:
                 print(f"You may continue sniffing or break to view network summary and investigate potential IP spoofing or DDoS attack")
+                time.sleep(0.1)
                 print(f"Continue sniffing? Please say 'yes' or 'no'")
 
-                limit = 5
-                exit_now = False
-                while(True):
-                    check_continue = input()
-                    if check_continue in affirmatives:
-                        break
-                    elif check_continue in negatives:
-                        exit_now = True
-                        break
-                    else:
-                        if limit <= 0:
-                            exit_now = True
-                            print("Too many invalid attempts. Exiting...")
-                            break
-                        print("Please answer yes or no.")
-                    limit -= 1
+                continue_sniffing = continue_or_break()
+                if continue_sniffing:
+                    break
 
     if detect_enter_keypress():
         break
