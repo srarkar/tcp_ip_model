@@ -18,6 +18,6 @@ When run, this tool monitors your network and catches Ethernet frames, which ARP
   - Once you have forked the repository, ``cd`` into the directory named "data_link", in reference to the layer of the Internet Protocol Stack the tool interacts with most.
   - From there, run ``.venv\Scripts\activate.bat`` (cmd) or ``.venv\Scripts\Activate.ps1`` (PowerShell) to activate the virtual environment.
   - Next, install the necessary dependencies by running ``pip install -r requirements.txt`` since the tool utilizes the ``netifaces`` and ``scapy`` packages which are third-party libraries.
-  - Lastly, run the tool with ``python arp_sniffer.py``
+  - Lastly, run the tool with ``python arp_ip_sniffer.py``
 
 ## Internet Layer
