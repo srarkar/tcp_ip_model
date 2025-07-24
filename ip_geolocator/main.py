@@ -24,13 +24,53 @@ def parse_args(argv):
     # with user input IPs + mapping: python3 main.py -i -m
         # prompt the user to type in tuples of IP addresses once this flag is read
     # consider adding .txt file reading functionality over manual input
-        # python3 main.py -i -t -m ip_list.txt (user input + text file + mapping)
+        # python3 main.py -i -d -m ip_list.txt (user input + text file + mapping)
 
     # flag dictionary:
     # -n: network sniffing to get IPs (default)
     # -i: user will input IPs (either manually (default), or a .txt file (-t))
+    # -m: mapping. map displays arrow from sender to destination (default)
+    # -l: map will only display individual locations
+    # -d for document/text file IP input
+    # -t for manually type input
+
+    settings_map = {}
+
+    flags = set(argv[1:])
     
-    network_sniffing = True # if this is false, user input is true
+    # network sniffing vs user input
+    if "-i" in flags and "-n" in flags:
+        print("The flags '-i' and '-n' cannot coexist. Please try again.")
+        exit()
+
+    elif "-i" in flags:
+
+        network_sniffing = False # if this is false, user input is true
+        flags.discard("-i")
+
+        if "-t" in flags and "-d" in flags:
+            print("The flags '-t' and '-d' cannot coexist. Please try again.")
+            exit()
+        elif "-t" in flags:
+            manual_input = True
+            flags.discard("-t")
+        elif "-d" in flags:
+            manual_input = False # look for text file input
+            flags.discard("-d")
+        else:
+            manual_input = True # default
+
+    elif "-n" in flags:
+        network_sniffing = True
+        flags.discard("-n")
+
+    else:
+        network_sniffing = True # default
+        manual_input = None
+
+
+
+    
     mapping = True # if this is false, display only individual locations on map
     if not network_sniffing:
         manual_input = True # if this is false, then look for .txt file
