@@ -21,3 +21,5 @@ When run, this tool monitors your network and catches Ethernet frames, which ARP
   - Lastly, run the tool with ``python arp_ip_sniffer.py``
 
 ## Internet Layer
+### IP Geolocator
+When run, this tool collects IP addresses from a user-specified source, which can be from network sniffing, manual typing, or saved in a separate text document. It then plots them on a graph to visually represent where packets are coming and going from.

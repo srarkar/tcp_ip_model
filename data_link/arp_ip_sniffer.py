@@ -1,6 +1,3 @@
-# looks at ARP packets sent on LAN, check MAC/IP pairs
-# how to utilize ethernet frame structure??
-
 import netifaces
 import scapy.all as scapy
 from scapy.all import Ether, ARP
@@ -109,7 +106,7 @@ start_time = time.time()
 while(True):
     packets = scapy.sniff(count=1, iface = iface)
     current_frame = packets[0]
-    if detect_enter_keypress():
+    if detect_enter_keypress(): # check if user wants to terminate execution
         break
     if current_frame["Ether"].type == EtherType.ARP.value: # ARP Packet
 
@@ -221,6 +218,6 @@ while(True):
     if detect_enter_keypress():
         break
 
-print_report(num_arp_packets, num_ip_packets, malicious_ips, ddos_ip_send, ddos_ip_dest)
+print_report(num_arp_packets, num_ip_packets, malicious_ips, ddos_ip_send, ddos_ip_dest) # final report from sniffing
 
 
