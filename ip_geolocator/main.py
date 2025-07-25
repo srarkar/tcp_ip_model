@@ -13,7 +13,11 @@
     # final report with number of IP addresses, and the areas visited (by country or region)
 
 import sys
+import time
+from pathlib import Path
+
 from core import handle_args as arg
+
 
 
 def main():
@@ -22,7 +26,37 @@ def main():
 
     # print settings based on flags, for user
     arg.print_settings(settings)
-    
+
+    ips = []
+
+    if settings["network_sniffing"]:
+        # sniff network to gather IPs
+        # stop when user pressers ENTER or based on gathering a set number of IPs
+        print("How many packets should be sniffed? Note that the number of IP addresses found will be double the number of sniffed packets.")
+        num_packets = input()
+        time.sleep(1)
+
+        # TODO: check that input() is a positive integer
+        
+        nose_ascii = Path(__file__).resolve().parent.parent / "shared_files" / "nose_ascii.txt"
+        
+        print("Commencing network sniffing...")
+
+        with open(nose_ascii, 'r') as file:
+            for line in file:
+                print(line.strip())
+
+        print("Press ENTER at any point to terminate execution")
+        time.sleep(0.5)
+
+    elif settings["manual_input"] == False:
+        # look for .txt file and parse it into IPs
+        pass
+    else:
+        # ask user to input IPs manually. first, check if mapping is true. if it is, ask for pairs of sender and destination. 
+        # otherwise, just get one IP at a time
+        pass
+
     sys.exit()
 
 if __name__ == "__main__":

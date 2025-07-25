@@ -12,6 +12,8 @@ import sys
 import select
 from enum import Enum
 
+from pathlib import Path
+
 class EtherType(Enum):
     IPv4 = 2048
     ARP = 2054
@@ -93,9 +95,11 @@ ddos_ip_dest = set()
 num_arp_packets = 0
 num_ip_packets = 0
 
+nose_ascii = Path(__file__).resolve().parent.parent / "shared_files" / "nose_ascii.txt"
+
 print("Commencing network sniffing...")
 
-with open('nose_ascii.txt', 'r') as file:
+with open(nose_ascii, 'r') as file:
     for line in file:
         print(line.strip())
 
