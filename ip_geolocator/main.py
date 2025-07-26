@@ -16,8 +16,8 @@ import sys
 import time
 from pathlib import Path
 
-from core import handle_args as arg
-
+from core import handle_args as arg 
+from core import network_sniffing as network
 
 
 def main():
@@ -32,18 +32,7 @@ def main():
     if settings["network_sniffing"]:
         # sniff network to gather IPs
         # stop when user pressers ENTER or based on gathering a set number of IPs
-        print("How many packets should be sniffed? Note that the number of IP addresses found will be double the number of sniffed packets.")
-
-        while True:
-            try:
-                num_packets = int(input("Enter number of packets: "))
-                if num_packets <= 0:
-                    print("Number of packets must be greater than 0.")
-                    continue
-                break
-            except ValueError:
-                print("Number of packets must be a positive integer. Please try again.")
-            
+        network.sniff_packets()
 
     elif settings["manual_input"] == False:
         # look for .txt file and parse it into IPs
