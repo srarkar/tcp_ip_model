@@ -8,7 +8,7 @@ A small collection of tools and projects concerning the Internet Protocol Stack 
 When run, this tool monitors your network and catches Ethernet frames, which ARP or IP packets. The tool parses these packets to determine the sender and destination IP Address/ MAC Address. It also keeps an eye out for potential ARP Spoofing, IP Spoofing, or DDoS attack, by checking mappings between IP and MAC addresses, and the number of times a certain IP address is the sender or receiver of a packet on the current network.
 
 #### Usage
-
+**THIS NEEDS TO BE UPDATED**
 ##### MacOS/Linux
   - Once you have forked the repository, ``cd`` into the directory named "data_link", in reference to the layer of the Internet Protocol Stack the tool interacts with most.
   - From there, run ``source .venv/bin/activate`` to activate the virtual environment.
