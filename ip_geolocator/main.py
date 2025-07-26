@@ -33,21 +33,17 @@ def main():
         # sniff network to gather IPs
         # stop when user pressers ENTER or based on gathering a set number of IPs
         print("How many packets should be sniffed? Note that the number of IP addresses found will be double the number of sniffed packets.")
-        num_packets = input()
-        time.sleep(1)
 
-        # TODO: check that input() is a positive integer
-        
-        nose_ascii = Path(__file__).resolve().parent.parent / "shared_files" / "nose_ascii.txt"
-        
-        print("Commencing network sniffing...")
-
-        with open(nose_ascii, 'r') as file:
-            for line in file:
-                print(line.strip())
-
-        print("Press ENTER at any point to terminate execution")
-        time.sleep(0.5)
+        while True:
+            try:
+                num_packets = int(input("Enter number of packets: "))
+                if num_packets <= 0:
+                    print("Number of packets must be greater than 0.")
+                    continue
+                break
+            except ValueError:
+                print("Number of packets must be a positive integer. Please try again.")
+            
 
     elif settings["manual_input"] == False:
         # look for .txt file and parse it into IPs

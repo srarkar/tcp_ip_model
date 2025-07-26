@@ -1,0 +1,34 @@
+from pathlib import Path
+import time
+import sys
+import select
+
+
+def detect_enter_keypress():
+    if sys.stdin in select.select([sys.stdin], [], [], 0)[0]:
+        line = sys.stdin.readline()
+        if line.strip() == "":
+            return True
+    return False
+
+def start_sniffing():
+    nose_ascii = Path(__file__).resolve().parent.parent / "shared_files" / "nose_ascii.txt"
+        
+    print("Commencing network sniffing...")
+
+    with open(nose_ascii, 'r') as file:
+        for line in file:
+            print(line.strip())
+
+    print("Press ENTER at any point to terminate execution")
+    time.sleep(0.5)
+
+def sniff_packets(num_packets):
+    # return error code, if any
+    while num_packets > 0:
+
+        if detect_enter_keypress:
+            return 0
+        
+        
+        num_packets -= 1

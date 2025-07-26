@@ -1,4 +1,5 @@
 # handle flags, settings
+import sys
 
 def parse_args(argv):
     ## not sure yet if sudo will be needed
@@ -27,8 +28,8 @@ def parse_args(argv):
     if "-n" in flags and ("-t" in flags or "-d" in flags):
         print("The tool only accepts IP addresses from a single source: network sniffing or manual input. Double check the flags used and try again.")
         sys.exit()
-    elif "-t" in flags or "-d" in flags:
 
+    elif "-t" in flags or "-d" in flags:
         network_sniffing = False # if this is false, user input is true
 
         if "-t" in flags and "-d" in flags:
@@ -64,7 +65,8 @@ def parse_args(argv):
         mapping = True # default
 
     if flags:
-        print(f"One or more invalid flags have been detected. They have been ignored.")
+        print(f"The following invalid flags have been detected. They have been ignored.")
+        print(list(flags))
     
     settings_map["network_sniffing"] = network_sniffing
     settings_map["manual_input"] = manual_input
