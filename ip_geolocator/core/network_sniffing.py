@@ -3,7 +3,12 @@ import time
 import sys
 import select
 
+import netifaces
+import os
+
 import scapy.all as scapy
+
+import platform
 
 
 def detect_enter_keypress():
@@ -71,9 +76,10 @@ def sniff_packets():
             return packets
         
         sniffed_packet = scapy.sniff(count=1, iface = iface)
-        current_packet = packets[0]
+        current_packet = sniffed_packet[0]
         
         num_packets += 1
+        print(f"Packet #{num_packets} sniffed.")
         time.sleep(0.5)
     print(f"{num_packets} packets successfully sniffed")
     return packets
