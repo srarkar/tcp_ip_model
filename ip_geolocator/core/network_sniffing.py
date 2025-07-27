@@ -50,9 +50,11 @@ def start_sniffing():
 
     print("Press ENTER at any point to terminate execution")
 
-def sniff_packets():
+def sniff_packets(settings):
 
-    print("How many packets should be sniffed?\nNote that the number of IP addresses found will be double the number of sniffed packets.")
+    print("How many packets should be sniffed?")
+    if not settings["mapping"]:
+        print("Note that the number of IP addresses found will be double the number of sniffed packets.")
     while True:
         try:
             total_packets = int(input("Enter number of packets: "))
@@ -62,6 +64,9 @@ def sniff_packets():
             break
         except ValueError:
             print("Number of packets must be a positive integer. Please try again.")
+
+    if total_packets > 500:
+        print("Note that the input number of packets is higher than recommended.")
 
     start_sniffing()
     time.sleep(1)
@@ -89,6 +94,6 @@ def sniff_packets():
 
         packets.append((source_ip, destination_ip))
 
-        time.sleep(0.25)
+        time.sleep(1 / (total_packets)) # more packets = less time in between
     print(f"{num_packets} packets successfully sniffed")
     return packets

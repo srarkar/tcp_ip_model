@@ -32,8 +32,8 @@ def main():
     if settings["network_sniffing"]:
         # sniff network to gather IPs
         # stop when user pressers ENTER or based on gathering a set number of IPs
-        network.sniff_packets()
-
+        network.sniff_packets(settings)
+        
     elif settings["manual_input"] == False:
         # look for .txt file and parse it into IPs
         pass
