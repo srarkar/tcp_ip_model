@@ -75,11 +75,20 @@ def sniff_packets():
             print(f"{num_packets} packets successfully sniffed")
             return packets
         
-        sniffed_packet = scapy.sniff(count=1, iface = iface)
+        sniffed_packet = scapy.sniff(count=1, iface = iface, filter="ip")
         current_packet = sniffed_packet[0]
         
         num_packets += 1
+
+        source_ip = current_packet["IP"].src
+        destination_ip = current_packet["IP"].dst
+
         print(f"Packet #{num_packets} sniffed.")
-        time.sleep(0.5)
+        print(f"\tSource IP: {source_ip}")
+        print(f"\tDestination IP: {destination_ip}")
+
+        packets.append((source_ip, destination_ip))
+
+        time.sleep(0.25)
     print(f"{num_packets} packets successfully sniffed")
     return packets
