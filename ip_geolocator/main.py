@@ -18,7 +18,7 @@ from pathlib import Path
 
 from core import handle_args as arg 
 from core import network_sniffing as network
-
+from core import document_handling as doc
 
 def main():
     # parse arguments and place in dictionary
@@ -26,17 +26,18 @@ def main():
 
     # print settings based on flags, for user
     arg.print_settings(settings)
-
-    ips = []
+    time.sleep(1)
 
     if settings["network_sniffing"]:
         # sniff network to gather IPs
         # stop when user pressers ENTER or based on gathering a set number of IPs
-        network.sniff_packets(settings)
+        ips = network.sniff_packets(settings)
+        print(ips)
         
     elif settings["manual_input"] == False:
-        # look for .txt file and parse it into IPs
-        pass
+        # prompt the user for the path to the .txt file
+        # then, parse it into IPs
+        path = doc.get_doc_path(settings)
     else:
         # ask user to input IPs manually. first, check if mapping is true. if it is, ask for pairs of sender and destination. 
         # otherwise, just get one IP at a time
