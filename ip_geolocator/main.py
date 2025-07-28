@@ -28,20 +28,27 @@ def main():
     arg.print_settings(settings)
     time.sleep(1)
 
+    ips = []
+
     if settings["network_sniffing"]:
         # sniff network to gather IPs
         # stop when user pressers ENTER or based on gathering a set number of IPs
         ips = network.sniff_packets(settings)
-        print(ips)
         
     elif settings["manual_input"] == False:
         # prompt the user for the path to the .txt file
         # then, parse it into IPs
         path = doc.get_doc_path(settings)
+        if settings["mapping"]:
+            ips = doc.parse_doc_pairs(path)
+        else:
+            ips = doc.parse_doc(path)
     else:
         # ask user to input IPs manually. first, check if mapping is true. if it is, ask for pairs of sender and destination. 
         # otherwise, just get one IP at a time
         pass
+    
+    print(f"{len(ips)} IP addresses successfully obtained.")
 
     sys.exit()
 

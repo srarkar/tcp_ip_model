@@ -4,11 +4,10 @@ import sys
 import select
 
 import netifaces
-import os
-
 import scapy.all as scapy
 
 import platform
+import os
 
 
 def detect_enter_keypress():
