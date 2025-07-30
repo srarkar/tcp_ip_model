@@ -19,6 +19,7 @@ from pathlib import Path
 from core import handle_args as arg 
 from core import network_sniffing as network
 from core import document_handling as doc
+from core import user_input_ips as user
 
 def main():
     # parse arguments and place in dictionary
@@ -44,8 +45,11 @@ def main():
         else:
             ips = doc.parse_doc(path)
     else:
-        pass
-    
+        if settings["mapping"]:
+            ips = user.get_ips_mapping()
+        else:
+            ips = user.get_ips_location()
+        
     print(ips)
 
     sys.exit()
