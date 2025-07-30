@@ -94,5 +94,4 @@ def sniff_packets(settings):
         packets.append((source_ip, destination_ip))
 
         time.sleep(1 / (total_packets)) # more packets = less time in between
-    print(f"{num_packets} packets successfully sniffed")
     return packets
