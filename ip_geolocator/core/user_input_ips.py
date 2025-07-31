@@ -12,6 +12,10 @@ def get_ips_location():
     ips = []
 
     while (True):
+        if len(ips) % 20:
+            stop = input(f"{len(ips)} IP addresses have been obtained. Stop now?")
+            if stop.lower() in affirmatives:
+                break
         ip = input(f"Please type IP address #{len(ips) + 1}: ")
         if ip in negatives:
             break
@@ -20,7 +24,10 @@ def get_ips_location():
         else:
             print(f"Invalid IP address entered: {ip}.")
 
-    print(f"{len(ips)} IP addresses obtained successfully")
+    if len(ips) == 1:
+        print(f"{len(ips)} IP address obtained successfully")
+    else:
+        print(f"{len(ips)} IP addresses obtained successfully")
     return ips
 
 def get_ips_mapping():
@@ -31,7 +38,7 @@ def get_ips_mapping():
     while (True):
         sender_ip = input(f"Please enter source IP address #{len(ips) + 1}: ")
         destination_ip = input(f"Please enter destination IP address #{len(ips) + 1}: ")
-        if sender_ip in negatives or destination_ip in negatives:
+        if sender_ip.lower() in negatives or destination_ip.lower() in negatives:
             print(f"Done entering IPs.")
             break
         if doc.validate_ip_addr(sender_ip) and doc.validate_ip_addr(destination_ip):
@@ -42,6 +49,6 @@ def get_ips_mapping():
             print(f"Invalid source IP address entered: {sender_ip}.")
         else: # both are invalid
             print(f"Invalid source and destination IP addresses entered: {sender_ip}, {destination_ip}")
-            
-    print(f"{len(ips)} IP address pairs obtained successfully")
+
+    print(f"{len(ips)} IP address pair(s) obtained successfully")
     return ips

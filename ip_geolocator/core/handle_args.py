@@ -15,7 +15,6 @@ def parse_args(argv):
 
     # flag dictionary:
     # -n: network sniffing to get IPs (default)
-    # -i: user will input IPs (either manually (default), or a .txt file (-t))
     # -m: mapping. map displays arrow from sender to destination (default)
     # -l: map will only display individual locations
     # -d for document/text file IP input
