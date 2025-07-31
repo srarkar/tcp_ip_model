@@ -3,7 +3,6 @@ import time
 import sys
 import select
 
-import netifaces
 import scapy.all as scapy
 
 import platform
@@ -17,29 +16,29 @@ def detect_enter_keypress():
             return True
     return False
 
-interfaces = netifaces.interfaces()
+def sniff_setup():
+    operating_system = platform.uname().system
+    match operating_system:
+        case "Darwin":
+            print("Detected OS: MacOS / Darwin")
+            iface = "en0"
+        case "Linux":
+            print("Detected OS: Linux")
+            iface = "eth0"
+        case "Windows":
+            print("Detected OS: Windows")
+            iface = "Ethernet"
+        case _:
+            raise NotImplementedError("Unsupported or unknown operating system.")
+        
+    if operating_system != "Windows" and os.geteuid() != 0:
+        print("Warning: You need to run this script with sudo / root permission.")
+        sys.exit()
 
-operating_system = platform.uname().system
-match operating_system:
-    case "Darwin":
-        print("Detected OS: MacOS / Darwin")
-        iface = "en0"
-    case "Linux":
-        print("Detected OS: Linux")
-        iface = "eth0"
-    case "Windows":
-        print("Detected OS: Windows")
-        iface = "Ethernet"
-    case _:
-        raise NotImplementedError("Unsupported or unknown operating system.")
-    
-if operating_system != "Windows" and os.geteuid() != 0:
-    print("Warning: You may need to run this script with sudo / root permission.")
-
-
+    return iface
 
 def start_sniffing():
-    nose_ascii = Path(__file__).resolve().parent.parent.parent / "shared_files" / "nose_ascii.txt"
+    nose_ascii = Path(__file__).resolve().parent.parent.parent.parent / "shared_files" / "nose_ascii.txt"
         
     print("Commencing network sniffing...")
 
@@ -48,6 +47,7 @@ def start_sniffing():
             print(line.strip())
 
     print("Press ENTER at any point to terminate execution")
+
 
 def sniff_packets(settings):
 
@@ -72,13 +72,14 @@ def sniff_packets(settings):
 
     packets = []
     num_packets = 0
+    iface = sniff_setup()
 
     # store tuples of (sender_ip, dest_ip)
     while num_packets < total_packets:
         if detect_enter_keypress():
             print(f"{num_packets} packets successfully sniffed")
             return packets
-        
+
         sniffed_packet = scapy.sniff(count=1, iface = iface, filter="ip")
         current_packet = sniffed_packet[0]
         

@@ -39,7 +39,10 @@ def parse_doc(path):
                         print(f"Line {line_num}: Invalid IP format: '{ip}'")
                 except Exception as e:
                     print(f"Line {line_num}: Error parsing line: {e}")
-    print(f"{len(ips)} IP addresses successfully parsed.")
+    if len(ips) == 1:
+        print(f"{len(ips)} IP address successfully parsed.")
+    else:
+        print(f"{len(ips)} IP addresses successfully parsed.")
     return ips
 
 # parse expecting tuples of IPs (sender, destination)
@@ -67,7 +70,7 @@ def parse_doc_pairs(file_path):
 
             except Exception as e:
                 print(f"Line {line_num}: Error parsing line: {e}")
-    print(f"{len(ip_pairs)} IP address pairs successfully obtained.")
+    print(f"{len(ip_pairs)} IP address pair(s) successfully obtained.")
     return ip_pairs
 
 def validate_ip_addr(ip_addr):

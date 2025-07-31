@@ -1,5 +1,5 @@
 # get manually typed IP addresses
-from core import document_handling as doc
+from core.obtain_ips import document_handling as doc
 
 affirmatives = {"yes", "ye", 'y', "yurr", "yeah", "yup", "indeed"}
 negatives = {"no", "n", "no thanks", "naw", "nope", "stop", "quit", "done"}

@@ -1,5 +1,6 @@
 # handle flags, settings
 import sys
+import os
 
 def parse_args(argv):
     ## not sure yet if sudo will be needed
@@ -74,6 +75,8 @@ def parse_args(argv):
 
 def print_settings(settings):
     if settings["network_sniffing"]:
+        if os.geteuid() != 0:
+            print("")
         ip_addr_src = "network sniffing"
     elif settings["manual_input"]:
         ip_addr_src = "manual typing"

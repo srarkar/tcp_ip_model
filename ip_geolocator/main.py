@@ -17,9 +17,9 @@ import time
 from pathlib import Path
 
 from core import handle_args as arg 
-from core import network_sniffing as network
-from core import document_handling as doc
-from core import user_input_ips as user
+from core.obtain_ips import network_sniffing as network
+from core.obtain_ips import document_handling as doc
+from core.obtain_ips import user_input_ips as user
 
 def main():
     # parse arguments and place in dictionary
@@ -44,6 +44,7 @@ def main():
             ips = doc.parse_doc_pairs(path)
         else:
             ips = doc.parse_doc(path)
+
     else:
         if settings["mapping"]:
             ips = user.get_ips_mapping()
@@ -51,6 +52,9 @@ def main():
             ips = user.get_ips_location()
         
     print(ips)
+
+    # ips have been obtained!
+
 
     sys.exit()
 
