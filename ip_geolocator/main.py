@@ -17,9 +17,11 @@ import time
 from pathlib import Path
 
 from core import handle_args as arg 
+from core import process_ips as process
 from core.obtain_ips import network_sniffing as network
 from core.obtain_ips import document_handling as doc
 from core.obtain_ips import user_input_ips as user
+from core.locate_ips import api_calling as api
 
 def main():
     # parse arguments and place in dictionary
@@ -51,10 +53,18 @@ def main():
         else:
             ips = user.get_ips_location()
         
-    print(ips)
+    if not ips:
+        print("No IP addresses obtianed. Exiting...")
+        sys.exit()
 
     # ips have been obtained!
 
+    ip_frequencies = process.generate_ip_frequencies(ips)
+
+    # frequency map of IP addresses obtained!
+
+    # make api requests for each ip in the frequency map
+    api.submit_requests(ip_frequencies.keys())
 
     sys.exit()
 
