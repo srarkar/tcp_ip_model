@@ -24,9 +24,6 @@ def generate_ip_frequencies(ips):
     ip_frequencies = {}
 
     for ip in ips:
-        if ip not in ip_frequencies:
-            ip_frequencies[ip] = 1
-        else:
-            ip_frequencies += 1
+        ip_frequencies[ip] = ip_frequencies.get(ip, 0) + 1
     return ip_frequencies
 

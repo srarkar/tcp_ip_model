@@ -16,7 +16,7 @@ import sys
 import time
 from pathlib import Path
 
-from core import handle_args as arg 
+from utils import handle_args as arg 
 from core import process_ips as process
 from core.obtain_ips import network_sniffing as network
 from core.obtain_ips import document_handling as doc

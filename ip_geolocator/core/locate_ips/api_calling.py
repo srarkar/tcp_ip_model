@@ -20,8 +20,9 @@ def submit_requests(ips):
 
         # extract info into ip request object, and store in dictionary
         if data_dictionary['status'] == 'fail':
-            print(f"Failed to scout IP address {ip} because of: {data_dictionary['message']}")
-            time.sleep()
+            print(f"Failed to scout IP address {ip} due to: {data_dictionary['message']}")
+            time.sleep(0.5)
+            continue
         ip_request_object = IPRequest.from_dict(data_dictionary)
         ip_to_request_object[ip] = ip_request_object
 
