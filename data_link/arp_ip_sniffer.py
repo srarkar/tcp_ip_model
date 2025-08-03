@@ -1,4 +1,3 @@
-import netifaces
 import scapy.all as scapy
 from scapy.all import Ether, ARP
 import platform
@@ -55,9 +54,6 @@ def print_report(num_arp_packets, num_ip_packets, malicious_ips, ddos_ip_send, d
     if ddos_ip_dest:
         print(f"\tPotential DDoS Victim at following IP Addresses: {', '.join(ddos_ip_dest)}")
 
-
-
-interfaces = netifaces.interfaces()
 
 operating_system = platform.uname().system
 match operating_system:
