@@ -32,7 +32,7 @@ def sniff_setup():
             raise NotImplementedError("Unsupported or unknown operating system.")
         
     if operating_system != "Windows" and os.geteuid() != 0:
-        print("Warning: You need to run this script with sudo / root permission to utilize network sniffing")
+        print("Warning: You need to run this script with sudo / root permission to utilize network sniffing!")
         sys.exit()
 
     return iface

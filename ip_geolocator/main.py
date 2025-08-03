@@ -22,7 +22,7 @@ from core.obtain_ips import network_sniffing as network
 from core.obtain_ips import document_handling as doc
 from core.obtain_ips import user_input_ips as user
 from core.locate_ips import api_calling as api
-from core.locate_ips import ip_request
+from core.plot_ips import plot
 
 def main():
     # parse arguments and place in dictionary
@@ -68,9 +68,8 @@ def main():
     ip_to_request_object = api.submit_requests(ip_frequencies.keys())
     
     # now, we have information for each IP, as well as their frequencies. 
-
-
-
+    
+    plot.plot_ips_on_map(ip_to_request_object.values())
 
     sys.exit()
 
