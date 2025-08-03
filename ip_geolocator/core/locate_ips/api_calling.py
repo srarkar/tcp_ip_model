@@ -29,6 +29,8 @@ def submit_requests(ips):
         if header["X-Rl"] == 0:
             time.sleep(header["X-Ttl"] + 1)
             # wait til 45 HTTP request limit ends
+    time.sleep(0.5)
+    print(f"Successfully scouting the following {len(ip_to_request_object.keys())} IPs: {', '.join(ip_to_request_object.keys())}")
     return ip_to_request_object
         
         

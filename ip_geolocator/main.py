@@ -55,7 +55,7 @@ def main():
             ips = user.get_ips_location()
         
     if not ips:
-        print("No IP addresses obtianed. Exiting...")
+        print("No IP addresses obtained. Exiting...")
         sys.exit()
 
     # ips have been obtained!
@@ -66,7 +66,12 @@ def main():
 
     # make api requests for each ip in the frequency map
     ip_to_request_object = api.submit_requests(ip_frequencies.keys())
-    print(ip_to_request_object)
+    
+    # now, we have information for each IP, as well as their frequencies. 
+
+
+
+
     sys.exit()
 
 if __name__ == "__main__":
