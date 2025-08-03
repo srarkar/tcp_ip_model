@@ -22,6 +22,7 @@ from core.obtain_ips import network_sniffing as network
 from core.obtain_ips import document_handling as doc
 from core.obtain_ips import user_input_ips as user
 from core.locate_ips import api_calling as api
+from core.locate_ips import ip_request
 
 def main():
     # parse arguments and place in dictionary
@@ -64,8 +65,8 @@ def main():
     # frequency map of IP addresses obtained!
 
     # make api requests for each ip in the frequency map
-    api.submit_requests(ip_frequencies.keys())
-
+    ip_to_request_object = api.submit_requests(ip_frequencies.keys())
+    print(ip_to_request_object)
     sys.exit()
 
 if __name__ == "__main__":
