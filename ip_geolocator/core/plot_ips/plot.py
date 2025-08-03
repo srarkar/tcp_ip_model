@@ -1,7 +1,21 @@
 import sys
 import folium
 
-def plot_ips_on_map(request_obj_lst, output_file="ip_map.html"):
+from pathlib import Path
+
+# print(f"Map saved to {save_path}")
+def get_save_path(output_file):
+    # Get the project root (parent of 'core')
+    project_root = Path(__file__).resolve().parents[2]
+
+    # Define the output path
+    output_dir = project_root / "output"
+    output_dir.mkdir(exist_ok=True)  # Ensure the folder exists
+
+    save_path = output_dir / output_file
+    return save_path
+
+def plot_ips_on_map(request_obj_lst, output_file = "ip_map.html"):
     if not request_obj_lst:
         print("No IPs provided to map. Exiting...")
         sys.exit(1)
@@ -12,7 +26,10 @@ def plot_ips_on_map(request_obj_lst, output_file="ip_map.html"):
         marker = folium.Marker(location=[ip_request.lat, ip_request.long],
             popup=f"{ip_request.ip_addr} - {ip_request.city}, {ip_request.country}",
             tooltip=ip_request.ip_addr)
-        marker.addto(ip_map)
+        marker.add_to(ip_map)
 
-    ip_map.save(output_file)
-    print(f"Map saved to {output_file}. Open it in your browser to view.")
+
+    save_path = get_save_path(output_file)
+    print(save_path)
+    ip_map.save(save_path)
+    print(f"Map saved to {save_path}. Open it in your browser to view.")
