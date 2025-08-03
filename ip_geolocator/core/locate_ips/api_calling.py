@@ -4,17 +4,10 @@ from .ip_request import IPRequest
 
 base_request = "http://ip-api.com/json/"
 
-
-
-def create_request(ip_addr):
-    return base_request + ip_addr
-
 def submit_requests(ips):
-
     ip_to_request_object = {}
     for ip in ips:
-        full_request = create_request(ip)
-        response = requests.get(full_request)
+        response = requests.get(base_request + ip)
         header = response.headers
         data_dictionary = response.json()
 
@@ -30,7 +23,7 @@ def submit_requests(ips):
             time.sleep(header["X-Ttl"] + 1)
             # wait til 45 HTTP request limit ends
     time.sleep(0.5)
-    print(f"Successfully scouting the following {len(ip_to_request_object.keys())} IPs: {', '.join(ip_to_request_object.keys())}")
+    print(f"Successfully scouted the following {len(ip_to_request_object.keys())} IPs: {', '.join(ip_to_request_object.keys())}")
     return ip_to_request_object
         
         
