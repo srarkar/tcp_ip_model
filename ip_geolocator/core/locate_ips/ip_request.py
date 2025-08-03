@@ -24,6 +24,6 @@ class IPRequest:
             city = data.get("city"),
             zip = data.get("zip"),
             lat = data.get("lat"),
-            long = data.get("long"),
+            long = data.get("lon"),
             timezone = data.get("timezone")
         )

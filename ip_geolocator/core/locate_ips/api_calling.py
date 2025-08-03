@@ -11,18 +11,23 @@ def submit_requests(ips):
         header = response.headers
         data_dictionary = response.json()
 
+        ip_request_object = IPRequest.from_dict(data_dictionary)
+
+        if header["X-Rl"] == "0":
+            time.sleep(header["X-Ttl"] + 1) # wait til 45 HTTP request limit ends
+
         # extract info into ip request object, and store in dictionary
         if data_dictionary['status'] == 'fail':
             print(f"Failed to scout IP address {ip} due to: {data_dictionary['message']}")
             time.sleep(0.5)
             continue
-        ip_request_object = IPRequest.from_dict(data_dictionary)
+        print(ip_request_object)
+        if ip_request_object.lat is None or ip_request_object.long is None:
+            print(f"Skipping IP {ip} due to missing location data.")
+            continue
+            
         ip_to_request_object[ip] = ip_request_object
 
-        if header["X-Rl"] == 0:
-            time.sleep(header["X-Ttl"] + 1)
-            # wait til 45 HTTP request limit ends
-    time.sleep(0.5)
     print(f"Successfully scouted the following {len(ip_to_request_object.keys())} IP(s): {', '.join(ip_to_request_object.keys())}")
     return ip_to_request_object
         
