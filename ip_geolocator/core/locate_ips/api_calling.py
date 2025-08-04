@@ -22,7 +22,7 @@ def submit_requests(ips):
             print(f"Failed to scout IP address {ip} due to: {data_dictionary['message']}")
             time.sleep(0.5)
             continue
-        print(ip_request_object)
+        # print(ip_request_object)
         if ip_request_object.lat is None or ip_request_object.long is None:
             print(f"Skipping IP {ip} due to missing location data.")
             continue

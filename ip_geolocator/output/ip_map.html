@@ -17,7 +17,7 @@
             <meta name="viewport" content="width=device-width,
                 initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
             <style>
-                #map_d944c90789bd324f27f6b009699a253a {
+                #map_87a26c81488106b8c4c85e8a56bbb998 {
                     position: relative;
                     width: 100.0%;
                     height: 100.0%;
@@ -54,14 +54,14 @@
 <body>
     
     
-            <div class="folium-map" id="map_d944c90789bd324f27f6b009699a253a" ></div>
+            <div class="folium-map" id="map_87a26c81488106b8c4c85e8a56bbb998" ></div>
         
 </body>
 <script>
     
     
-            var map_d944c90789bd324f27f6b009699a253a = L.map(
-                "map_d944c90789bd324f27f6b009699a253a",
+            var map_87a26c81488106b8c4c85e8a56bbb998 = L.map(
+                "map_87a26c81488106b8c4c85e8a56bbb998",
                 {
                     center: [0.0, 0.0],
                     crs: L.CRS.EPSG3857,
@@ -78,7 +78,7 @@
 
         
     
-            var tile_layer_030cf03431323a199bcc15dfe71d55f8 = L.tileLayer(
+            var tile_layer_f3b3eea6d145db437337151fa3462a16 = L.tileLayer(
                 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 {
   "minZoom": 0,
@@ -95,34 +95,95 @@
             );
         
     
-            tile_layer_030cf03431323a199bcc15dfe71d55f8.addTo(map_d944c90789bd324f27f6b009699a253a);
+            tile_layer_f3b3eea6d145db437337151fa3462a16.addTo(map_87a26c81488106b8c4c85e8a56bbb998);
         
     
-            var marker_bb4e916a3a152525dcca81897799a479 = L.marker(
-                [44.4267, 26.1025],
+            var marker_9fb7b4af6ee3dc42de302643780e4d26 = L.marker(
+                [39.03, -77.5],
                 {
 }
-            ).addTo(map_d944c90789bd324f27f6b009699a253a);
+            ).addTo(map_87a26c81488106b8c4c85e8a56bbb998);
         
     
-        var popup_6e718212037a25c6befc4e8c7bb34dac = L.popup({
+            var icon_6ba51ca6f5f955ddf5896ed573fdbb1d = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+  "iconSize": [37.33333333333333, 37.33333333333333],
+}
+            );
+        
+    
+        var popup_aba39bec93964c36c579a043097c2ddf = L.popup({
   "maxWidth": "100%",
 });
 
         
             
-                var html_9885c7928a6b96b283c67982844fe4d9 = $(`<div id="html_9885c7928a6b96b283c67982844fe4d9" style="width: 100.0%; height: 100.0%;">198.51.100.42 - Bucharest, Romania</div>`)[0];
-                popup_6e718212037a25c6befc4e8c7bb34dac.setContent(html_9885c7928a6b96b283c67982844fe4d9);
+                var html_4fbc3e28d6eb883d9d15db6ee4d67972 = $(`<div id="html_4fbc3e28d6eb883d9d15db6ee4d67972" style="width: 100.0%; height: 100.0%;">8.8.8.8 - Ashburn, United States</div>`)[0];
+                popup_aba39bec93964c36c579a043097c2ddf.setContent(html_4fbc3e28d6eb883d9d15db6ee4d67972);
             
         
 
-        marker_bb4e916a3a152525dcca81897799a479.bindPopup(popup_6e718212037a25c6befc4e8c7bb34dac)
+        marker_9fb7b4af6ee3dc42de302643780e4d26.bindPopup(popup_aba39bec93964c36c579a043097c2ddf)
         ;
 
         
     
     
-            marker_bb4e916a3a152525dcca81897799a479.bindTooltip(
+            marker_9fb7b4af6ee3dc42de302643780e4d26.bindTooltip(
+                `<div>
+                     8.8.8.8
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9fb7b4af6ee3dc42de302643780e4d26.setIcon(icon_6ba51ca6f5f955ddf5896ed573fdbb1d);
+            
+    
+            var marker_81acc707b80391e3bcefafe9899edba9 = L.marker(
+                [44.4267, 26.1025],
+                {
+}
+            ).addTo(map_87a26c81488106b8c4c85e8a56bbb998);
+        
+    
+            var icon_da94d374110eb68ea17d2982045d950c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+  "iconSize": [37.33333333333333, 37.33333333333333],
+}
+            );
+        
+    
+        var popup_081d2f5bc197b911193b33790a902750 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_65bf5da5f8e8a6d41c5bc816433ff401 = $(`<div id="html_65bf5da5f8e8a6d41c5bc816433ff401" style="width: 100.0%; height: 100.0%;">198.51.100.42 - Bucharest, Romania</div>`)[0];
+                popup_081d2f5bc197b911193b33790a902750.setContent(html_65bf5da5f8e8a6d41c5bc816433ff401);
+            
+        
+
+        marker_81acc707b80391e3bcefafe9899edba9.bindPopup(popup_081d2f5bc197b911193b33790a902750)
+        ;
+
+        
+    
+    
+            marker_81acc707b80391e3bcefafe9899edba9.bindTooltip(
                 `<div>
                      198.51.100.42
                  </div>`,
@@ -132,38 +193,7 @@
             );
         
     
-            var marker_35daa1218581aaf803661c62d034f683 = L.marker(
-                [39.03, -77.5],
-                {
-}
-            ).addTo(map_d944c90789bd324f27f6b009699a253a);
-        
-    
-        var popup_e3a27ea2d817dd3eeef81e51ed82f9dc = L.popup({
-  "maxWidth": "100%",
-});
-
-        
+                marker_81acc707b80391e3bcefafe9899edba9.setIcon(icon_da94d374110eb68ea17d2982045d950c);
             
-                var html_264e928ff60ea9062905b91564727ebd = $(`<div id="html_264e928ff60ea9062905b91564727ebd" style="width: 100.0%; height: 100.0%;">8.8.8.8 - Ashburn, United States</div>`)[0];
-                popup_e3a27ea2d817dd3eeef81e51ed82f9dc.setContent(html_264e928ff60ea9062905b91564727ebd);
-            
-        
-
-        marker_35daa1218581aaf803661c62d034f683.bindPopup(popup_e3a27ea2d817dd3eeef81e51ed82f9dc)
-        ;
-
-        
-    
-    
-            marker_35daa1218581aaf803661c62d034f683.bindTooltip(
-                `<div>
-                     8.8.8.8
-                 </div>`,
-                {
-  "sticky": true,
-}
-            );
-        
 </script>
 </html>

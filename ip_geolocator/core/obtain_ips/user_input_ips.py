@@ -15,7 +15,6 @@ def get_ips_location():
             stop = input(f"{len(ips)} IP addresses have been obtained. Stop now? ")
             if stop.lower() in affirmatives:
                 break
-            
         ip = input(f"Please type IP address #{len(ips) + 1}: ")
         if ip in negatives:
             break
@@ -40,7 +39,6 @@ def get_ips_mapping():
             stop = input(f"{len(ips)} IP addresses have been obtained. Stop now? ")
             if stop.lower() in affirmatives:
                 break
-
         sender_ip = input(f"Please enter source IP address #{len(ips) + 1}: ")
         destination_ip = input(f"Please enter destination IP address #{len(ips) + 1}: ")
         if sender_ip.lower() in negatives or destination_ip.lower() in negatives:
