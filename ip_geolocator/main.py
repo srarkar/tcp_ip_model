@@ -47,9 +47,9 @@ def main():
         ips = doc.parse_doc(path, settings["mapping"])
 
     else:
-        ips = user.get_ips()
-        
-        
+        ips = user.get_ips(settings["mapping"])
+
+
     if not ips:
         print("No IP addresses obtained. Exiting...")
         sys.exit()

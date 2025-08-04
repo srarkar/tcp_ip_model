@@ -4,6 +4,7 @@ import folium
 from pathlib import Path
 
 ## TODO: add connections between sender and destination if settings[mapping] is True
+## TODO: add larger markers, or some visual change when a location has a higher frequency
 
 # print(f"Map saved to {save_path}")
 def get_save_path(output_file):

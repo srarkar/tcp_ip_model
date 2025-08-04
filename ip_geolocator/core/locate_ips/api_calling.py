@@ -1,5 +1,6 @@
 import requests
 import time
+import sys
 from .ip_request import IPRequest
 
 base_request = "http://ip-api.com/json/"
@@ -27,8 +28,11 @@ def submit_requests(ips):
             continue
             
         ip_to_request_object[ip] = ip_request_object
-
-    print(f"Successfully scouted the following {len(ip_to_request_object.keys())} IP(s): {', '.join(ip_to_request_object.keys())}")
+    if len(ip_to_request_object.keys()) > 0:
+        print(f"Successfully scouted the following {len(ip_to_request_object.keys())} IP(s): {', '.join(ip_to_request_object.keys())}")
+    else:
+        print(f"Unable to scout IPs due to reasons stated above. Exiting...")
+        sys.exit(1)
     return ip_to_request_object
         
         
