@@ -3,6 +3,8 @@ import folium
 
 from pathlib import Path
 
+## TODO: add connections between sender and destination if settings[mapping] is True
+
 # print(f"Map saved to {save_path}")
 def get_save_path(output_file):
     # Get the project root (parent of 'core')

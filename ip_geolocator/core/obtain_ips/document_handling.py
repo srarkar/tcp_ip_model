@@ -1,6 +1,19 @@
 import os
 import sys
 from pathlib import Path
+
+def validate_ip_addr(ip_addr):
+    parts = ip_addr.strip().split('.')
+    if len(parts) != 4:
+        return False
+    for part in parts:
+        if not part.isdigit():
+            return False
+        num = int(part)
+        if num < 0 or num > 255:
+            return False
+    return True
+
 # request document path from user, 
 def get_doc_path(settings):
     if settings["mapping"]:
@@ -26,7 +39,7 @@ def get_doc_path(settings):
     return path
 
 # parse document, expecting individual IPs only
-def parse_doc(path):
+def parse_doc_indiv(path):
     with open(path, 'r') as f:
         ips = []
         for line_num, line in enumerate(f, start=1):
@@ -73,14 +86,8 @@ def parse_doc_pairs(file_path):
     print(f"{len(ip_pairs)} IP address pair(s) successfully obtained.")
     return ip_pairs
 
-def validate_ip_addr(ip_addr):
-    parts = ip_addr.strip().split('.')
-    if len(parts) != 4:
-        return False
-    for part in parts:
-        if not part.isdigit():
-            return False
-        num = int(part)
-        if num < 0 or num > 255:
-            return False
-    return True
+def parse_doc(path, mapping):
+    if mapping:
+        return parse_doc_pairs(path)
+    else:
+        return parse_doc_indiv(path)

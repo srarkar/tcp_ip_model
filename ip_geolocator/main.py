@@ -42,16 +42,13 @@ def main():
         # prompt the user for the path to the .txt file
         # then, parse it into IPs
         path = doc.get_doc_path(settings)
-        if settings["mapping"]:
-            ips = doc.parse_doc_pairs(path)
-        else:
-            ips = doc.parse_doc(path)
+
+        # TODO: can move the if-else logic into document_handling.
+        ips = doc.parse_doc(path, settings["mapping"])
 
     else:
-        if settings["mapping"]:
-            ips = user.get_ips_mapping()
-        else:
-            ips = user.get_ips_location()
+        ips = user.get_ips()
+        
         
     if not ips:
         print("No IP addresses obtained. Exiting...")

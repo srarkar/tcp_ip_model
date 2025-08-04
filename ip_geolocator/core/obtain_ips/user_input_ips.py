@@ -52,3 +52,9 @@ def get_ips_mapping():
 
     print(f"{len(ips)} IP address pair(s) obtained successfully")
     return ips
+
+def get_ips(mapping):
+    if mapping:
+        return get_ips_mapping()
+    else:
+        return get_ips_location()
