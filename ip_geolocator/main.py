@@ -57,7 +57,7 @@ def main():
     # ips have been obtained!
 
     ip_frequencies = process.generate_ip_frequencies(ips)
-    
+
     # frequency map of IP addresses obtained!
 
     # make api requests for each ip in the frequency map
@@ -65,7 +65,15 @@ def main():
     
     # now, we have information for each IP, as well as their frequencies. 
     
-    plot.plot_ips_on_map(ip_to_request_object.values(), frequency_map=ip_frequencies)
+    # TODO: need list of tuples of ip request object pairs 
+    # for each tuple in ips, check value using ip as key
+    if settings["mapping"]:
+        ip_request_pairs = []
+        for ip in ips:
+            ip_request_pairs.append((ip_to_request_object[ip[0]], ip_to_request_object[ip[1]]))
+            
+
+    plot.plot_ips_on_map(ip_to_request_object.values(), frequency_map=ip_frequencies, ip_pairs=ip_request_pairs)
 
     sys.exit()
 

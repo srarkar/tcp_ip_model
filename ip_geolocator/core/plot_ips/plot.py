@@ -1,9 +1,9 @@
 import sys
 import folium
-from folium import Map, Marker, Icon, CustomIcon
+from folium import Map, Marker, Icon, CustomIcon, Popup
 
 from pathlib import Path
-DEFAULT_SIZE = 30 # This is where the default size is set. 28 is a normal size and works ok but any larger causes problems
+DEFAULT_SIZE = 30
 ## TODO: add connections between sender and destination if settings[mapping] is True
 
 # print(f"Map saved to {save_path}")
@@ -35,12 +35,13 @@ def get_marker(ip_request, icon_size):
     return folium.Marker(
         location=[ip_request.lat, ip_request.long],
         icon=icon,
-        popup=f"{ip_request.ip_addr}\n{ip_request.city}, {ip_request.country}",
         tooltip=ip_request.ip_addr,
+        popup=f"{ip_request.ip_addr}\n{ip_request.city}, {ip_request.country}",
+        
     )
     
 
-def plot_ips_on_map(request_obj_lst, frequency_map, output_file = "ip_map.html"):
+def plot_ips_on_map(request_obj_lst, frequency_map, ip_pairs = None, output_file = "ip_map.html"):
     if not request_obj_lst:
         print("No IPs provided to map. Exiting...")
         sys.exit(1)
@@ -55,13 +56,33 @@ def plot_ips_on_map(request_obj_lst, frequency_map, output_file = "ip_map.html")
         marker.add_to(ip_map)
 
     ## TODO: take pairs of IP request objects as input
-    ## call on plot connectiosn to draw lines between them, using the lat and long of source and dest IP
-
+    ## call on plot connections to draw lines between them, using the lat and long of source and dest IP
+    if ip_pairs:
+        plot_connections(ip_map, ip_pairs)
 
     save_path = get_save_path(output_file)
     print(save_path)
     ip_map.save(save_path)
     print(f"Map saved to {save_path}. Open it in your browser to view.")
 
-def plot_connections(ip_pairs):
-    pass
+def plot_connections(map, ip_pairs):
+    for pair in ip_pairs:
+        src = pair[0]
+        dest = pair[1]
+
+        popup_content = f"From {src.city}, {src.country} to {dest.city}, {dest.country}"
+        custom_popup = folium.Popup(
+        popup_content,
+        max_width=400,     # Maximum width in pixels
+        min_width=250,     # Optional: minimum width
+        max_height=250,    # Optional: height of the popup
+        parse_html=True    # Optional: enables HTML parsing if your popup_content contains HTML
+        )
+        folium.PolyLine(
+        locations=[[src.lat, src.long], [dest.lat, dest.long]],
+        color='blue',
+        weight=2,
+        opacity=0.6,
+        tooltip = f"{src.ip_addr} --> {dest.ip_addr}",
+        popup = custom_popup
+    ).add_to(map)
