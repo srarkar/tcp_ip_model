@@ -27,7 +27,16 @@ if not marker_path.exists():
     print(f"Error: Marker image not found at {marker_path}")
     sys.exit(1)
 
+
 def get_marker(ip_request, icon_size):
+    popup_content = f"{ip_request.city}, {ip_request.regionName}, {ip_request.country}"
+    custom_popup = folium.Popup(
+        popup_content,
+        max_width=400,     # Maximum width in pixels
+        min_width=200,     # Optional: minimum width
+        max_height=300,    # Optional: height of the popup
+        parse_html=True    # Optional: enables HTML parsing if your popup_content contains HTML
+        )
     icon = CustomIcon(
         icon_image=str(marker_path),
         icon_size=icon_size
@@ -36,12 +45,11 @@ def get_marker(ip_request, icon_size):
         location=[ip_request.lat, ip_request.long],
         icon=icon,
         tooltip=ip_request.ip_addr,
-        popup=f"{ip_request.ip_addr}\n{ip_request.city}, {ip_request.country}",
-        
+        popup=custom_popup
     )
     
 
-def plot_ips_on_map(request_obj_lst, frequency_map, ip_pairs = None, output_file = "ip_map.html"):
+def plot_ips_on_map(request_obj_lst, frequency_map, ip_pairs, output_file = "ip_map.html"):
     if not request_obj_lst:
         print("No IPs provided to map. Exiting...")
         sys.exit(1)
@@ -57,7 +65,7 @@ def plot_ips_on_map(request_obj_lst, frequency_map, ip_pairs = None, output_file
 
     ## TODO: take pairs of IP request objects as input
     ## call on plot connections to draw lines between them, using the lat and long of source and dest IP
-    if ip_pairs:
+    if len(ip_pairs) > 0:
         plot_connections(ip_map, ip_pairs)
 
     save_path = get_save_path(output_file)

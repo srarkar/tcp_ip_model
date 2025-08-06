@@ -67,13 +67,13 @@ def main():
     
     # TODO: need list of tuples of ip request object pairs 
     # for each tuple in ips, check value using ip as key
+    ip_request_pairs = []
     if settings["mapping"]:
-        ip_request_pairs = []
         for ip in ips:
             ip_request_pairs.append((ip_to_request_object[ip[0]], ip_to_request_object[ip[1]]))
             
 
-    plot.plot_ips_on_map(ip_to_request_object.values(), frequency_map=ip_frequencies, ip_pairs=ip_request_pairs)
+    plot.plot_ips_on_map(ip_to_request_object.values(), ip_frequencies, ip_request_pairs)
 
     sys.exit()
 
