@@ -64,7 +64,8 @@ def add_side_panel(ip_map):
                 `<b>IP:</b> ${ip} <br/>
                  <b>City:</b> ${city} <br/>
                  <b>Region:</b> ${region} <br/>
-                 <b>Country:</b> ${country}`;
+                 <b>Country:</b> ${country} <br/>
+                 <b>Zip Code:</b> ${zip}`;
         }
 
         // Run after map loads
@@ -133,7 +134,8 @@ def get_marker(ip_request, icon_size):
         "ip": ip_request.ip_addr,
         "city": ip_request.city,
         "region": ip_request.regionName,
-        "country": ip_request.country
+        "country": ip_request.country,
+        "zip": ip_request.zip
     }
 
     return marker
