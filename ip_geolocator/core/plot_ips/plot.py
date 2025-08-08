@@ -1,12 +1,38 @@
 import sys
 import folium
 from folium import Map, Marker, Icon, CustomIcon, Popup
+import math
 
 from pathlib import Path
 DEFAULT_SIZE = 30
-## TODO: add connections between sender and destination if settings[mapping] is True
 
-# print(f"Map saved to {save_path}")
+# creates curved arc between 2 points (PolyLine modification)
+def interpolate_arc(lat1, lon1, lat2, lon2, num_points=100, curvature=0.1):
+    arc_points = []
+    for i in range(num_points + 1):
+        t = i / num_points
+        # Linear interpolation
+        lat = (1 - t) * lat1 + t * lat2
+        lon = (1 - t) * lon1 + t * lon2
+        # Add "curvature" perpendicular to line
+        dx = lon2 - lon1
+        dy = lat2 - lat1
+        dist = math.sqrt(dx ** 2 + dy ** 2)
+        offset = curvature * math.sin(math.pi * t) * dist
+
+        # Rotate perpendicular vector
+        nx = -dy
+        ny = dx
+        norm = math.sqrt(nx ** 2 + ny ** 2)
+        if norm != 0:
+            nx /= norm
+            ny /= norm
+
+        lat += ny * offset
+        lon += nx * offset
+        arc_points.append((lat, lon))
+    return arc_points
+
 def get_icon_size(frequency, total):
     ratio = float(frequency + total) / total
     return (DEFAULT_SIZE * ratio, DEFAULT_SIZE * ratio)
@@ -32,10 +58,10 @@ def get_marker(ip_request, icon_size):
     popup_content = f"{ip_request.city}, {ip_request.regionName}, {ip_request.country}"
     custom_popup = folium.Popup(
         popup_content,
-        max_width=400,     # Maximum width in pixels
-        min_width=200,     # Optional: minimum width
-        max_height=300,    # Optional: height of the popup
-        parse_html=True    # Optional: enables HTML parsing if your popup_content contains HTML
+        max_width=400,    
+        min_width=200,     
+        max_height=300,    
+        parse_html=True    
         )
     icon = CustomIcon(
         icon_image=str(marker_path),
@@ -86,8 +112,12 @@ def plot_connections(map, ip_pairs):
         max_height=250,    # Optional: height of the popup
         parse_html=True    # Optional: enables HTML parsing if your popup_content contains HTML
         )
+        start = (src.lat, src.long)
+        end = (dest.lat, dest.long)
+        arc = interpolate_arc(*start, *end)
+
         folium.PolyLine(
-        locations=[[src.lat, src.long], [dest.lat, dest.long]],
+        locations=arc,
         color='blue',
         weight=2,
         opacity=0.6,
