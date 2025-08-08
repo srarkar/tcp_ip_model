@@ -2,9 +2,12 @@ import sys
 import folium
 from folium import Map, Marker, Icon, CustomIcon, Popup
 import math
+from branca.element import Template, MacroElement
 
 from pathlib import Path
 DEFAULT_SIZE = 30
+
+# TODO: add side panel via html + JS listener for click on marker
 
 # creates curved arc between 2 points (PolyLine modification)
 def interpolate_arc(lat1, lon1, lat2, lon2, num_points=100, curvature=0.1):
@@ -32,6 +35,59 @@ def interpolate_arc(lat1, lon1, lat2, lon2, num_points=100, curvature=0.1):
         lon += nx * offset
         arc_points.append((lat, lon))
     return arc_points
+
+# adds side panel with HTML + JS listener
+def add_side_panel(ip_map):
+    html = """
+    {% macro html(this, kwargs) %}
+    <style>
+        #info-panel {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 300px;
+            max-height: 80%;
+            background-color: white;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            z-index: 9999;
+            font-size: 14px;
+        }
+    </style>
+    <div id="info-panel">
+        <div id="marker-info"><b>Click on a marker to display information.</b></div>
+    </div>
+    <script>
+        function updateInfoPanel(ip, city, region, country) {
+            document.getElementById('marker-info').innerHTML =
+                `<b>IP:</b> ${ip} <br/>
+                 <b>City:</b> ${city} <br/>
+                 <b>Region:</b> ${region} <br/>
+                 <b>Country:</b> ${country}`;
+        }
+
+        // Run after map loads
+        document.addEventListener('DOMContentLoaded', function() {
+            for (var key in window) {
+                if (window[key] instanceof L.Marker) {
+                    window[key].on('click', function(e) {
+                        if (this.options.customData) {
+                            let d = this.options.customData;
+                            updateInfoPanel(d.ip, d.city, d.region, d.country);
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+    {% endmacro %}
+    """
+    macro = MacroElement()
+    macro._template = Template(html)
+    ip_map.get_root().add_child(macro)
+
+
 
 def get_icon_size(frequency, total):
     ratio = float(frequency + total) / total
@@ -67,12 +123,20 @@ def get_marker(ip_request, icon_size):
         icon_image=str(marker_path),
         icon_size=icon_size
     )
-    return folium.Marker(
+    marker = folium.Marker(
         location=[ip_request.lat, ip_request.long],
         icon=icon,
         tooltip=ip_request.ip_addr,
-        popup=custom_popup
     )
+    marker.options = marker.options or {}
+    marker.options["customData"] = {
+        "ip": ip_request.ip_addr,
+        "city": ip_request.city,
+        "region": ip_request.regionName,
+        "country": ip_request.country
+    }
+
+    return marker
     
 
 def plot_ips_on_map(request_obj_lst, frequency_map, ip_pairs, output_file = "ip_map.html"):
@@ -88,7 +152,7 @@ def plot_ips_on_map(request_obj_lst, frequency_map, ip_pairs, output_file = "ip_
         icon_size = get_icon_size(frequency, total_ips)
         marker = get_marker(ip_request, icon_size)
         marker.add_to(ip_map)
-
+    add_side_panel(ip_map)
     ## TODO: take pairs of IP request objects as input
     ## call on plot connections to draw lines between them, using the lat and long of source and dest IP
     if len(ip_pairs) > 0:
