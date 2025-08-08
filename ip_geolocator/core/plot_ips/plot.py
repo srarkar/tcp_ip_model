@@ -7,8 +7,6 @@ from branca.element import Template, MacroElement
 from pathlib import Path
 DEFAULT_SIZE = 30
 
-# TODO: add side panel via html + JS listener for click on marker
-
 # creates curved arc between 2 points (PolyLine modification)
 def interpolate_arc(lat1, lon1, lat2, lon2, num_points=100, curvature=0.1):
     arc_points = []
@@ -59,13 +57,18 @@ def add_side_panel(ip_map):
         <div id="marker-info"><b>Click on a marker to display information.</b></div>
     </div>
     <script>
-        function updateInfoPanel(ip, city, region, country) {
-            document.getElementById('marker-info').innerHTML =
-                `<b>IP:</b> ${ip} <br/>
-                 <b>City:</b> ${city} <br/>
-                 <b>Region:</b> ${region} <br/>
-                 <b>Country:</b> ${country} <br/>
-                 <b>Zip Code:</b> ${zip}`;
+        function updateInfoPanel(ip, city, region, country, zip) {
+            let zipRow = "";
+            if (zip && zip !== "000000") {
+                zipRow = `<div><b>ZIP Code:</b> ${zip}</div>`;
+            }
+            document.getElementById('marker-info').innerHTML = `
+                <div><b>IP:</b> ${ip}</div>
+                <div><b>City:</b> ${city}</div>
+                <div><b>Region:</b> ${region}</div>
+                <div><b>Country:</b> ${country}</div>
+                ${zipRow}
+            `;
         }
 
         // Run after map loads
@@ -75,7 +78,7 @@ def add_side_panel(ip_map):
                     window[key].on('click', function(e) {
                         if (this.options.customData) {
                             let d = this.options.customData;
-                            updateInfoPanel(d.ip, d.city, d.region, d.country);
+                            updateInfoPanel(d.ip, d.city, d.region, d.country, d.zip);
                         }
                     });
                 }
@@ -87,6 +90,7 @@ def add_side_panel(ip_map):
     macro = MacroElement()
     macro._template = Template(html)
     ip_map.get_root().add_child(macro)
+
 
 
 
@@ -112,14 +116,6 @@ if not marker_path.exists():
 
 
 def get_marker(ip_request, icon_size):
-    popup_content = f"{ip_request.city}, {ip_request.regionName}, {ip_request.country}"
-    custom_popup = folium.Popup(
-        popup_content,
-        max_width=400,    
-        min_width=200,     
-        max_height=300,    
-        parse_html=True    
-        )
     icon = CustomIcon(
         icon_image=str(marker_path),
         icon_size=icon_size
