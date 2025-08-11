@@ -19,7 +19,7 @@ def get_doc_path(settings):
     if settings["mapping"]:
         print(f"IP addresses should be formatted in the format of sender_ip, destination_ip, with one pair per line.")
     else:
-        print(f"The document be formatted with one IP address on its own line.")
+        print(f"The document must be formatted with one IP address per line.")
     
     num_tries = 5
     while (num_tries > 0):

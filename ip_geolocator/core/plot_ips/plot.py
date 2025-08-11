@@ -135,31 +135,6 @@ def get_marker(ip_request, icon_size):
     }
 
     return marker
-    
-
-def plot_ips_on_map(request_obj_lst, frequency_map, ip_pairs, output_file = "ip_map.html"):
-    if not request_obj_lst:
-        print("No IPs provided to map. Exiting...")
-        sys.exit(1)
-    
-    ip_map = folium.Map(location=[0, 0], zoom_start=2)
-    total_ips = sum(frequency_map.values())
-
-    for ip_request in request_obj_lst:
-        frequency = frequency_map[ip_request.ip_addr]
-        icon_size = get_icon_size(frequency, total_ips)
-        marker = get_marker(ip_request, icon_size)
-        marker.add_to(ip_map)
-    add_side_panel(ip_map)
-    ## TODO: take pairs of IP request objects as input
-    ## call on plot connections to draw lines between them, using the lat and long of source and dest IP
-    if len(ip_pairs) > 0:
-        plot_connections(ip_map, ip_pairs)
-
-    save_path = get_save_path(output_file)
-    print(save_path)
-    ip_map.save(save_path)
-    print(f"Map saved to {save_path}. Open it in your browser to view.")
 
 def plot_connections(map, ip_pairs):
     for pair in ip_pairs:
@@ -186,3 +161,31 @@ def plot_connections(map, ip_pairs):
         tooltip = f"{src.ip_addr} --> {dest.ip_addr}",
         popup = custom_popup
     ).add_to(map)
+        
+def plot_ips_on_map(request_obj_lst, frequency_map, ip_pairs, output_file = "ip_map.html"):
+    if not request_obj_lst:
+        print("No IPs provided to map. Exiting...")
+        sys.exit(1)
+    
+    ip_map = folium.Map(location=[0, 0], zoom_start=2)
+    total_ips = sum(frequency_map.values())
+
+    for ip_request in request_obj_lst:
+        frequency = frequency_map[ip_request.ip_addr]
+        icon_size = get_icon_size(frequency, total_ips)
+        marker = get_marker(ip_request, icon_size)
+        marker.add_to(ip_map)
+    add_side_panel(ip_map)
+
+    # draw lines between connections, if mapped is true
+    if len(ip_pairs) > 0:
+        plot_connections(ip_map, ip_pairs)
+        
+    print(f"Total request objects: {len(request_obj_lst)}")
+    print(f"Total unique IPs in frequency_map: {len(frequency_map)}")
+    print(f"IPs being plotted: {[req.ip_addr for req in request_obj_lst]}")
+
+    save_path = get_save_path(output_file)
+    print(save_path)
+    ip_map.save(save_path)
+    print(f"Map saved to {save_path}. Open it in your browser to view.")

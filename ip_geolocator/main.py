@@ -65,14 +65,12 @@ def main():
     
     # now, we have information for each IP, as well as their frequencies. 
     
-    # TODO: need list of tuples of ip request object pairs 
-    # for each tuple in ips, check value using ip as key
-    ip_request_pairs = []
-    if settings["mapping"]:
-        for ip in ips:
-            ip_request_pairs.append((ip_to_request_object[ip[0]], ip_to_request_object[ip[1]]))
-            
 
+    if settings["mapping"]:
+        ip_request_pairs = api.get_pairs(ips, ip_to_request_object)
+    else:
+        ip_request_pairs = []
+    
     plot.plot_ips_on_map(ip_to_request_object.values(), ip_frequencies, ip_request_pairs)
 
     sys.exit()

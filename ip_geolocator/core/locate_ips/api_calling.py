@@ -15,6 +15,7 @@ def submit_requests(ips):
         ip_request_object = IPRequest.from_dict(data_dictionary)
 
         if header["X-Rl"] == "0":
+            print(f"API HTTP Request reached. Waiting for {header["X-Ttl"]} seconds")
             time.sleep(header["X-Ttl"] + 1) # wait til 45 HTTP request limit ends
 
         # extract info into ip request object, and store in dictionary
@@ -34,6 +35,12 @@ def submit_requests(ips):
         print(f"Unable to scout IPs due to reasons stated above. Exiting...")
         sys.exit(1)
     return ip_to_request_object
+
+def get_pairs(ips, ip_to_request_object):
+    ip_request_pairs = []
+    for ip in ips:
+        ip_request_pairs.append((ip_to_request_object[ip[0]], ip_to_request_object[ip[1]]))
+    return ip_request_pairs
         
         
         
