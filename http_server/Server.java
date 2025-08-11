@@ -1,7 +1,33 @@
-// 1. Setup Phase
-// Define port number (e.g., 8080).
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-// Create a ServerSocket bound to that port.
+public class Server {
+    // alternate HTTP port
+    public static final int PORT = 8080;
+    public static void main(String[] args) {
+
+        // Create a ServerSocket bound to alternate HTTP port
+        try(ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("Server started on port " + PORT);
+
+            while(true) {
+                try (Socket clientSocket = serverSocket.accept()) {
+                    System.out.println("Client conneced from: " + clientSocket.getInetAddress());
+
+                } catch (IOException e) {
+                    System.err.println("Could not start server on port " + PORT + ": " + e.getMessage());
+                }
+            }
+            
+        } catch (IOException e) {
+            System.err.println("Could not start server on port " + PORT + ": " + e.getMessage());
+        }
+        
+    }
+}
+
+
 
 // Print a message so you know the server is running.
 
