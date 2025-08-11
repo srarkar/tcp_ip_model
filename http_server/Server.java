@@ -1,6 +1,10 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.charset.Charset;
 
 public class Server {
     // alternate HTTP port
@@ -12,23 +16,33 @@ public class Server {
             System.out.println("Server started on port " + PORT);
 
             while(true) {
-                try (Socket clientSocket = serverSocket.accept()) {
+                try (Socket clientSocket = serverSocket.accept()) { // block until a client connects
                     System.out.println("Client conneced from: " + clientSocket.getInetAddress());
+                    // this will read what the client sends as raw bytes
+                    InputStream inStream = clientSocket.getInputStream();
+                    // this will decode raw bytes into characters via a specified charset
+                    InputStreamReader inStreamReader = new InputStreamReader(inStream, Charset.forName("UTF-8"));
+                    // improve efficiency -- speeds up IO by reading larger blocks at a time
+                    BufferedReader inBuffReader = new BufferedReader(inStreamReader);
+                    // read input stream until a blank line is hit
 
                 } catch (IOException e) {
-                    System.err.println("Could not start server on port " + PORT + ": " + e.getMessage());
+                    System.err.println("Error accepting client connection: " + e.getMessage());
                 }
             }
             
         } catch (IOException e) {
             System.err.println("Could not start server on port " + PORT + ": " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
         }
+        System.exit(0);
         
     }
 }
 
 
-
+// 1. Declare and connect to a port (such as 8080)
 // Print a message so you know the server is running.
 
 // 2. Main Loop (Accepting Connections)
