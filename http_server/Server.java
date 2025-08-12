@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.Charset;
@@ -27,12 +29,19 @@ public class Server {
                     // read input stream until a blank line is hit
                     String response = inBuffReader.readLine();
                     System.out.println(response);
+
                     /// TODO: add outputStream to respond to server to prevent curl 52 errors
-
-
+                    OutputStream outputStream = clientSocket.getOutputStream();
+                    PrintWriter outWriter = new PrintWriter(outputStream, true);
+                    outWriter.println("HTTP/1.1 200 OK");
+                    outWriter.println("Content-Length: 6");
+                    outWriter.println("Content-Type: text/plain");
+                    outWriter.println(); // Blank line indicates end of headers
+                    outWriter.println("Hello\n"); // content
                 } catch (IOException e) {
                     System.err.println("Error accepting client connection: " + e.getMessage());
                 }
+                break;
             }
             
         } catch (IOException e) {
