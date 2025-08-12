@@ -1,13 +1,6 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.io.*;
+import java.net.*;
 import java.nio.charset.Charset;
-
 public class Server {
     // alternate HTTP port
     public static final int PORT = 8080;
@@ -33,15 +26,18 @@ public class Server {
                     /// TODO: add outputStream to respond to server to prevent curl 52 errors
                     OutputStream outputStream = clientSocket.getOutputStream();
                     PrintWriter outWriter = new PrintWriter(outputStream, true);
-                    outWriter.println("HTTP/1.1 200 OK");
-                    outWriter.println("Content-Length: 6");
-                    outWriter.println("Content-Type: text/plain");
-                    outWriter.println(); // Blank line indicates end of headers
-                    outWriter.println("Hello\n"); // content
+                    String body = "Hello server :3";
+
+                    outWriter.print("HTTP/1.1 200 OK\r\n");
+   
+                    outWriter.print("Content-Type: text/plain\r\n");
+                    outWriter.print("Content-Length: " + body.length() + "\r\n");
+                    outWriter.print("\r\n"); // Blank line indicates end of headers
+                    outWriter.print(body); // content
+                    outWriter.flush();
                 } catch (IOException e) {
                     System.err.println("Error accepting client connection: " + e.getMessage());
                 }
-                break;
             }
             
         } catch (IOException e) {
