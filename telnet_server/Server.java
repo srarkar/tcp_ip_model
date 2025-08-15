@@ -6,6 +6,18 @@ import java.nio.charset.Charset;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+// notes for exp4j:
+// available constants: π, e the value of Euler's number e, and φ the value of the golden ratio (1.61803398874)
+// scientific notation, implicit multiplication
+// builtin operators:
+    // Addition: 2 + 2
+    // Subtraction: 2 - 2
+    // Multiplication: 2 * 2
+    // Division: 2 / 2
+    // Exponentation: 2 ^ 2
+    // Unary Minus,Plus (Sign Operators): +2 - (-2)
+    // Modulo: 2 % 2
+
 public class Server {
     // alternate HTTP port
     public static final int PORT = 8080;
