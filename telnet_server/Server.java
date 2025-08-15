@@ -18,6 +18,12 @@ import net.objecthunter.exp4j.ExpressionBuilder;
     // Unary Minus,Plus (Sign Operators): +2 - (-2)
     // Modulo: 2 % 2
 
+
+
+/// Compile: javac -cp lib/exp4j-0.4.8.jar Server.java
+/// Build JAR file: jar cfm Server.jar MANIFEST.MF Server.class lib/exp4j-0.4.8.jar
+/// Run JAR file: java -jar Server.jar
+
 public class Server {
     // alternate HTTP port
     public static final int PORT = 8080;
@@ -55,8 +61,9 @@ public class Server {
                 String response;
                 while ((response = inBuffReader.readLine()) != null) {
                     if (response.equalsIgnoreCase("exit")) {
-                        outPrinter.println("Thank you, and goodye.");
+                        outPrinter.println("Thanks for using the telnet server! - RS.");
                         System.out.println("Client exited.");
+                        clientSocket.close();
                         break;
                     }
                     String[] tokens = parse_args(response);
@@ -107,6 +114,7 @@ public class Server {
     // TODO: implement and test all handlers
     // TODO: brainstorm additional if time
     private static String echo_handler(String response) {
+        // "/echo " is 6 chars
         return response.substring(6);
     }
 
