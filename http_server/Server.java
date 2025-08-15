@@ -37,17 +37,20 @@ public class Server {
                 // read client input
                 String response;
                 while ((response = inBuffReader.readLine()) != null) {
-                    System.out.println("Client sent: " + response);
                     if (response.equalsIgnoreCase("exit")) {
                         outPrinter.println("Thank you, and goodye.");
                         System.out.println("Client exited.");
                         break;
                     }
                     String[] tokens = parse_args(response);
-                    String command = tokens[0];
+                    String result = execute_command(tokens[0], outPrinter, tokens, response);
+                    
+                    // update server display
+                    System.out.println("Client sent: " + response);
+                    System.out.println("Output: " + result);
 
-
-                    outPrinter.println("You said: " + response);
+                    // reply to client
+                    outPrinter.println(result);
                     outPrinter.print("> ");
                     outPrinter.flush();
                 }
@@ -66,31 +69,39 @@ public class Server {
         return tokens;
     }
 
-    private static void execute_command(String command, PrintWriter outPrinter, String args) {
-        switch (command) {
-            case "/echo" -> echo_handler(args);
-            case "/math" -> math_handler(args);
-            case "/wiki" -> wiki_handler(args);
-            case "/weather" -> weather_handler(args);
-            default -> outPrinter.println("Unknown command: " + "command");
+    private static String execute_command(String command, PrintWriter outPrinter, String[] args, String response) {
+        String result;
+        // check if first token is a command 
+        if (command.charAt(0) != '/') {
+            result = "You said: " + response;
+            return result;
         }
+
+        switch (command) {
+            case "/echo" -> result = echo_handler(args);
+            case "/math" -> result = math_handler(args);
+            case "/wiki" -> result = wiki_handler(args);
+            case "/weather" -> result = weather_handler(args);
+            default -> result = "Unknown command: " + command;
+        }
+        return result;
     }
 
 
-    private static String echo_handler(String args) {
-        return "";
+    private static String echo_handler(String[] args) {
+        return "this is echo (echo)";
     }
 
-    private static String math_handler(String args) {
-        return "";
+    private static String math_handler(String[] args) {
+        return "2 + 2 is 4 - 1 that's three quick mafs";
     }
 
-    private static String wiki_handler(String args) {
-        return "";
+    private static String wiki_handler(String[] args) {
+        return "whatever you do, don't use wikipedia";
     }
 
-    private static String weather_handler(String args) {
-        return "";
+    private static String weather_handler(String[] args) {
+        return "pip pip cheerio, how's the weathuh";
     }
 
 
