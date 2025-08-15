@@ -43,6 +43,10 @@ public class Server {
                         System.out.println("Client exited.");
                         break;
                     }
+                    String[] tokens = parse_args(response);
+                    String command = tokens[0];
+
+
                     outPrinter.println("You said: " + response);
                     outPrinter.print("> ");
                     outPrinter.flush();
@@ -57,8 +61,19 @@ public class Server {
         System.exit(0);
     }
 
-    private static String[] parse_args(String args) {
-        return new String[]{};
+    private static String[] parse_args(String response) {
+        String[] tokens = response.split("\\s+");
+        return tokens;
+    }
+
+    private static void execute_command(String command, PrintWriter outPrinter, String args) {
+        switch (command) {
+            case "/echo" -> echo_handler(args);
+            case "/math" -> math_handler(args);
+            case "/wiki" -> wiki_handler(args);
+            case "/weather" -> weather_handler(args);
+            default -> outPrinter.println("Unknown command: " + "command");
+        }
     }
 
 
