@@ -23,6 +23,7 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 /// Compile: javac -cp lib/exp4j-0.4.8.jar Server.java
 /// Build JAR file: jar cfm Server.jar MANIFEST.MF Server.class lib/exp4j-0.4.8.jar
 /// Run JAR file: java -jar Server.jar
+/// Makefile: 
 
 public class Server {
     // alternate HTTP port
