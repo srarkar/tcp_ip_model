@@ -7,7 +7,7 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 // notes for exp4j:
-// available constants: π, e the value of Euler's number e, and φ the value of the golden ratio (1.61803398874)
+// available constants: π/"pi", e the value of Euler's number e, and φ (type "phi") the value of the golden ratio (1.61803398874)
 // scientific notation, implicit multiplication
 // builtin operators:
     // Addition: 2 + 2
@@ -23,7 +23,6 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 /// Compile: javac -cp lib/exp4j-0.4.8.jar Server.java
 /// Build JAR file: jar cfm Server.jar MANIFEST.MF Server.class lib/exp4j-0.4.8.jar
 /// Run JAR file: java -jar Server.jar
-/// Makefile: 
 
 public class Server {
     // alternate HTTP port
@@ -39,7 +38,7 @@ public class Server {
             // main loop
             while(true) {
                 Socket clientSocket = serverSocket.accept();
-                System.out.println("Client connected from: " + clientSocket.getInetAddress());
+                System.out.println("Client connected from: " + clientSocket.getInetAddress().getHostAddress());
                 // this will read what the client sends as raw bytes
                 InputStream inStream = clientSocket.getInputStream();
                 // this will decode raw bytes into characters via a specified charset
@@ -104,7 +103,7 @@ public class Server {
 
         switch (command) {
             case "/echo" -> result = echo_handler(response);
-            case "/math" -> result = math_handler(args);
+            case "/math" -> result = math_handler(response);
             case "/wiki" -> result = wiki_handler(args);
             case "/weather" -> result = weather_handler(args);
             default -> result = "Unknown command: " + command;
@@ -119,12 +118,22 @@ public class Server {
         return response.substring(6);
     }
 
-    private static String math_handler(String[] args) {
-        return "2 + 2 is 4 - 1 that's three quick mafs";
+    private static String math_handler(String response) {
+        // "/math " is 6 chars
+        String expression = response.substring(6);
+        try {
+            Expression e = new ExpressionBuilder(expression).variable("phi")
+                                                                .build()
+                                                                .setVariable("phi", 1.61803398874);
+            double res = e.evaluate();
+            return Double.toString(res);
+        } catch (Exception e) {
+            return ("Invalid math expression: " + expression);
+        } 
     }
 
     private static String wiki_handler(String[] args) {
-        return "whatever you do, don't use wikipedia";
+        return "teacher: whatever you do, don't use wikipedia. Me: ";
     }
 
     private static String weather_handler(String[] args) {
