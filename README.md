@@ -186,3 +186,4 @@ See [LICENSE](LICENSE) for details.
 
 ---
 
+Thanks for checking it out 🤙
