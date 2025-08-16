@@ -23,6 +23,9 @@ import com.google.gson.JsonParser;
     // Unary Minus,Plus (Sign Operators): +2 - (-2)
     // Modulo: 2 % 2
 
+// notes for weather handler:
+// Format: City[ ,Country][ ,Region/State] | ZIP/Postal | Airport | Landmark
+
 
 
 /// Compile: javac -cp lib/exp4j-0.4.8.jar Server.java
@@ -72,7 +75,7 @@ public class Server {
                         break;
                     }
                     String[] tokens = parse_args(response);
-                    String result = execute_command(tokens[0], tokens, response);
+                    String result = execute_command(tokens[0], response);
                     
                     // update server display
                     System.out.println("Client sent: " + response);
@@ -98,7 +101,16 @@ public class Server {
         return tokens;
     }
 
-    private static String execute_command(String command, String[] args, String response) {
+    private static String arg_handler_helper(String response, int cmdLength, String usageHint) {
+        if (response.length() <= cmdLength) return usageHint;
+
+        String args = response.substring(cmdLength).trim();
+        if (args.isEmpty()) return usageHint;
+
+        return args;
+    }
+
+    private static String execute_command(String command, String response) {
         String result;
         // check if first token is a command 
         if (command.charAt(0) != '/') {
@@ -110,22 +122,21 @@ public class Server {
             case "/echo" -> result = echo_handler(response);
             case "/math" -> result = math_handler(response);
             case "/wiki" -> result = wiki_handler(response);
-            case "/weather" -> result = weather_handler(args);
+            case "/weather" -> result = weather_handler(response);
             default -> result = "Unknown command: " + command;
         }
         return result;
     }
 
-    // TODO: implement and test all handlers
-    // TODO: brainstorm additional if time
     private static String echo_handler(String response) {
-        // "/echo " is 6 chars
-        return response.substring(6);
+        return arg_handler_helper(response, 6, "");
+
     }
 
     private static String math_handler(String response) {
-        // "/math " is 6 chars
-        String expression = response.substring(6);
+        String expression = arg_handler_helper(response, 6, "Please provide an expression, e.g., /math 2 + 2");
+        if (expression.startsWith("Please")) return expression; // returns usage hint
+
         try {
             Expression e = new ExpressionBuilder(expression).variable("phi")
                                                                 .build()
@@ -138,11 +149,14 @@ public class Server {
     }
 
     private static String wiki_handler(String response) {
-        // "/wiki " is 6 chars
-        String query = response.substring(6);
+        String query = arg_handler_helper(response, 6, "Please specify a topic to search, e.g., /wiki Albert Einstein");
+        if (query.startsWith("Please")) return query;
+        query = query.replace(' ', '_');
+
         try {
             String urlStr = "https://en.wikipedia.org/api/rest_v1/page/summary/" + URLEncoder.encode(query, "UTF-8");
-            HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
+            HttpURLConnection conn = (HttpURLConnection) 
+                new URI(urlStr).toURL().openConnection();
             conn.setRequestMethod("GET");
 
             StringBuilder json;
@@ -162,14 +176,42 @@ public class Server {
                 return "No summary found for: " + query;
             }
         } catch (Exception e) {
-            return "Wikipedia API failed for query: " + query + "due to: " + e.getMessage();
+            return "Wikipedia API failed for query: " + query + " due to: " + e.getMessage();
         }
     }
 
 
-    private static String weather_handler(String[] args) {
-        return "pip pip cheerio, how's the weathuh";
+    private static String weather_handler(String response) {
+        String location = arg_handler_helper(response, 9, "Please specify a location, e.g., /weather Paris");
+        if (location.startsWith("Please")) return location;
+
+        StringBuilder result = new StringBuilder();
+        try {
+            // Correct format string with necessary details for readability
+            String format = "%l: %c %t, feels:%f, humidity:%h, wind:%w%s, moon:%m";
+            
+            // Encode the location and format string for the URL
+            String encodedLocation = URLEncoder.encode(location, StandardCharsets.UTF_8);
+            String encodedFormat = URLEncoder.encode(format, StandardCharsets.UTF_8);
+            
+            String urlStr = "https://wttr.in/" + encodedLocation + "?format=" + encodedFormat;
+
+            HttpURLConnection conn = (HttpURLConnection) new URI(urlStr).toURL().openConnection();
+            conn.setRequestMethod("GET");
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    result.append(line);
+                }
+            }
+
+            return result.toString();
+        } catch (Exception e) {
+            return "Weather lookup failed for location: " + location + " due to: " + e.getMessage();
+        }
     }
+
 
 
 }

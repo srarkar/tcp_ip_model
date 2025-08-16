@@ -10,7 +10,7 @@ all: $(JARFILE)
 
 # compile when Server.java is newer than Server.class (e.g. recently updated)
 $(CLASS): $(SRC)
-	@javac -cp "$(LIBJARS: =:)" $(SRC)
+	@javac -cp "lib/exp4j-0.4.8.jar:lib/gson-2.13.1.jar" $(SRC)
 	@echo "$(SRC) compiled successfully"
 
 # build class if manifest or jar files change
