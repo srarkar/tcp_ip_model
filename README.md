@@ -11,15 +11,15 @@ A small collection of tools and projects concerning the Internet Protocol Stack 
 ```
 tcp_ip_model/
 ├── .venv/                # Python virtual environment
-├── data_link/            # Ethernet frame network sniffer
+├── data_link/
 │   └── arp_ip_sniffer.py
-├── ip_geolocator/        # IP geolocation and visualization tool
+├── ip_geolocator/
 │   ├── main.py
 │   ├── core/
 │   ├── output/
 │   │   └── ip_map.html
 │   ├── utils/
-├── telnet_server/        # Simple Telnet server implementation (Java)
+├── telnet_server/
 │   ├── Server.java
 │   ├── Makefile
 │   ├── MANIFEST.MF
@@ -37,7 +37,7 @@ tcp_ip_model/
 
 ### 1. Ethernet Frame Network Sniffer (`data_link/arp_ip_sniffer.py`)
 
-Monitors your network and captures Ethernet frames (ARP or IP packets). Parses packets to determine sender/destination IP and MAC addresses. Detects potential ARP/IP spoofing or DDoS attacks by analyzing address mappings and packet frequency per unit time.
+Monitors your network and captures Ethernet frames (ARP or IP packets). Parses packets to determine sender/destination IP and MAC addresses. Detects potential ARP/IP spoofing or DDoS attacks by analyzing address mappings and packet frequency.
 
 **MacOS/Linux**
 ```bash
@@ -61,15 +61,80 @@ python data_link\arp_ip_sniffer.py
 
 Collects IP addresses from various sources (network sniffing, manual entry, or text files) and plots them on a map to visualize packet origins and destinations.
 
-**MacOS/Linux/Windows**
+**Usage:**
+
 ```bash
 cd tcp_ip_model
 source .venv/bin/activate   # or use Windows activation above
 pip install -r requirements.txt
-python ip_geolocator/main.py
+python ip_geolocator/main.py [flags]
 ```
-- The tool will prompt you to provide a source of IP addresses.
-- Output map will be saved as `ip_geolocator/output/ip_map.html`.
+
+#### Flags
+
+- `-n` : **Network sniffing** (default)  
+  Obtain IP addresses by sniffing packets on your local network.  
+  Example:  
+  ```bash
+  sudo python ip_geolocator/main.py -n
+  ```
+
+- `-t` : **Manual input**  
+  Enter IP addresses manually when prompted.  
+  Example:  
+  ```bash
+  python ip_geolocator/main.py -t
+  ```
+
+- `-d` : **Text file input**  
+  Read IP addresses from a `.txt` file. You will be prompted for the file path.  
+  Example:  
+  ```bash
+  python ip_geolocator/main.py -d
+  ```
+
+- `-m` : **Mapping mode** (default)  
+  Display connections (arrows) between sender and destination IPs on the map.  
+  Example:  
+  ```bash
+  python ip_geolocator/main.py -m
+  ```
+
+- `-l` : **Location-only mode**  
+  Only display individual IP locations, without connections.  
+  Example:  
+  ```bash
+  python ip_geolocator/main.py -l
+  ```
+
+#### Flag Combinations
+
+- **Default:**  
+  Network sniffing + mapping  
+  ```bash
+  sudo python ip_geolocator/main.py
+  ```
+- **Manual input + mapping:**  
+  ```bash
+  python ip_geolocator/main.py -t -m
+  ```
+- **Manual input + location-only:**  
+  ```bash
+  python ip_geolocator/main.py -t -l
+  ```
+- **Text file input + mapping:**  
+  ```bash
+  python ip_geolocator/main.py -d -m
+  ```
+- **Text file input + location-only:**  
+  ```bash
+  python ip_geolocator/main.py -d -l
+  ```
+
+**Notes:**
+- You cannot use both `-n` and `-t`/`-d` at the same time.
+- You cannot use both `-m` and `-l` at the same time.
+- The output map will be saved as `ip_geolocator/output/ip_map.html`.
 
 ---
 
@@ -77,7 +142,7 @@ python ip_geolocator/main.py
 
 A simple Telnet server implementation for experimenting with the TCP/IP stack at the application layer. Supports commands like `/echo`, `/math`, `/wiki`, and `/weather`.
 
-**Build and Run (MacOS/Linux)**
+**Build and Run (MacOS/Linux):**
 ```bash
 cd tcp_ip_model/telnet_server
 make        # Compiles and builds Server.jar
@@ -90,7 +155,7 @@ jar cfm Server.jar MANIFEST.MF Server.class
 java -jar Server.jar
 ```
 
-**Connect to the Server**
+**Connect to the Server:**
 ```bash
 telnet localhost 8080
 ```
@@ -118,4 +183,4 @@ See [LICENSE](LICENSE) for details.
 
 ---
 
-Feel free to explore each folder for more details and usage instructions for individual
+Feel free to explore each folder for more details and usage instructions
