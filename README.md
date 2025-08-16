@@ -143,12 +143,14 @@ python ip_geolocator/main.py [flags]
 ### 3. Telnet Server (`telnet_server/Server.java`)
 
 A simple Telnet server implementation for experimenting with the TCP/IP stack at the application layer. Supports commands like `/echo`, `/math`, `/wiki`, and `/weather`.
+Includes a Makefile for streamlined compilation, building, and running. 
 
 **Build and Run (MacOS/Linux):**
 ```bash
 cd tcp_ip_model/telnet_server
 make        # Compiles and builds Server.jar
 make run    # Runs the server
+# `make clean` to delete .jar and .class files
 ```
 Or manually:
 ```bash
