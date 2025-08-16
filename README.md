@@ -150,7 +150,7 @@ Includes a Makefile for streamlined compilation, building, and running.
 cd tcp_ip_model/telnet_server
 make        # Compiles and builds Server.jar
 make run    # Runs the server
-# `make clean` to delete .jar and .class files
+# make clean to delete .jar and .class files
 ```
 Or manually:
 ```bash
