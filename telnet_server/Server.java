@@ -3,34 +3,19 @@ import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
-// used for math expression evaluation
+// used for math expression evaluation (ignore red squigglies)
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
-// used for parsing Wikipedia REST API
+// used for parsing Wikipedia REST API (more red squigglies -- don't worry!)
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-// notes for exp4j:
-// available constants: π/"pi", e the value of Euler's number e, and φ (type "phi") the value of the golden ratio (1.61803398874)
-// scientific notation, implicit multiplication
-// builtin operators:
-    // Addition: 2 + 2
-    // Subtraction: 2 - 2
-    // Multiplication: 2 * 2
-    // Division: 2 / 2
-    // Exponentation: 2 ^ 2
-    // Unary Minus,Plus (Sign Operators): +2 - (-2)
-    // Modulo: 2 % 2
-
-// notes for weather handler:
-// Format: City[ ,Country][ ,Region/State] | ZIP/Postal | Airport | Landmark
-
 
 
 /// Compile: javac -cp lib/exp4j-0.4.8.jar Server.java
 /// Build JAR file: jar cfm Server.jar MANIFEST.MF Server.class lib/exp4j-0.4.8.jar
 /// Run JAR file: java -jar Server.jar
+/// oooooor just `make run` silly
 
 public class Server {
     // alternate HTTP port
