@@ -1,10 +1,15 @@
 import java.io.*;
 import java.net.*;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 // used for math expression evaluation
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
+
+// used for parsing Wikipedia REST API
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 // notes for exp4j:
 // available constants: π/"pi", e the value of Euler's number e, and φ (type "phi") the value of the golden ratio (1.61803398874)
@@ -104,7 +109,7 @@ public class Server {
         switch (command) {
             case "/echo" -> result = echo_handler(response);
             case "/math" -> result = math_handler(response);
-            case "/wiki" -> result = wiki_handler(args);
+            case "/wiki" -> result = wiki_handler(response);
             case "/weather" -> result = weather_handler(args);
             default -> result = "Unknown command: " + command;
         }
@@ -124,7 +129,7 @@ public class Server {
         try {
             Expression e = new ExpressionBuilder(expression).variable("phi")
                                                                 .build()
-                                                                .setVariable("phi", 1.61803398874);
+                                                                .setVariable("phi", 1.61803398874); // UTC-8 
             double res = e.evaluate();
             return Double.toString(res);
         } catch (Exception e) {
@@ -132,9 +137,35 @@ public class Server {
         } 
     }
 
-    private static String wiki_handler(String[] args) {
-        return "teacher: whatever you do, don't use wikipedia. Me: ";
+    private static String wiki_handler(String response) {
+        // "/wiki " is 6 chars
+        String query = response.substring(6);
+        try {
+            String urlStr = "https://en.wikipedia.org/api/rest_v1/page/summary/" + URLEncoder.encode(query, "UTF-8");
+            HttpURLConnection conn = (HttpURLConnection) new URL(urlStr).openConnection();
+            conn.setRequestMethod("GET");
+
+            StringBuilder json;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                json = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    json.append(line);
+                }
+            }
+
+            // parse JSON using Gson
+            JsonObject obj = JsonParser.parseString(json.toString()).getAsJsonObject();
+            if (obj.has("extract")) {
+                return obj.get("extract").getAsString();
+            } else {
+                return "No summary found for: " + query;
+            }
+        } catch (Exception e) {
+            return "Wikipedia API failed for query: " + query + "due to: " + e.getMessage();
+        }
     }
+
 
     private static String weather_handler(String[] args) {
         return "pip pip cheerio, how's the weathuh";

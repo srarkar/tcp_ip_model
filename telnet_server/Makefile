@@ -1,7 +1,7 @@
 MAINCLASS = Server
 JARFILE = $(MAINCLASS).jar
 LIBDIR = lib
-LIBJAR = $(LIBDIR)/exp4j-0.4.8.jar
+LIBJARS := $(wildcard $(LIBDIR)/*.jar)
 SRC = $(MAINCLASS).java
 CLASS = $(MAINCLASS).class
 
@@ -10,12 +10,12 @@ all: $(JARFILE)
 
 # compile when Server.java is newer than Server.class (e.g. recently updated)
 $(CLASS): $(SRC)
-	@javac -cp $(LIBJAR) $(SRC) 
+	@javac -cp "$(LIBJARS: =:)" $(SRC)
 	@echo "$(SRC) compiled successfully"
 
-# build JAR if .class or MANIFEST/lib change
-$(JARFILE): $(CLASS) MANIFEST.MF $(LIBJAR)
-	@jar cfm $(JARFILE) MANIFEST.MF $(CLASS) -C $(LIBDIR) $(notdir $(LIBJAR)) 
+# build class if manifest or jar files change
+$(JARFILE): $(CLASS) MANIFEST.MF $(LIBJARS)
+	@jar cfm $(JARFILE) MANIFEST.MF $(CLASS)
 	@echo "$(JARFILE) built successfully"
 
 # run JAR
