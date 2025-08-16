@@ -167,7 +167,7 @@ telnet localhost 8080
   - `/echo <message>`: Echoes your message.
   - `/math <expression>`: Evaluates a math expression (supports constants π, e, φ and operators +, -, *, /, ^, %).
   - `/wiki <topic>`: Fetches a summary from Wikipedia via the `Wikipedia REST API`.
-  - `/weather <location>`: Fetches weather info via `wttr.in`.
+  - `/weather <location>`: Fetches weather info via `wttr.in`. Location format options: `City[ ,Country][ ,Region/State] | ZIP/Postal | Airport | Landmark`
 
 ---
 
