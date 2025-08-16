@@ -37,7 +37,7 @@ tcp_ip_model/
 
 ### 1. Ethernet Frame Network Sniffer (`data_link/arp_ip_sniffer.py`)
 
-Monitors your network and captures Ethernet frames (ARP or IP packets). Parses packets to determine sender/destination IP and MAC addresses. Detects potential ARP/IP spoofing or DDoS attacks by analyzing address mappings and packet frequency.
+Monitors your network and captures Ethernet frames (ARP or IP packets). Parses packets to determine sender/destination IP and MAC addresses. Detects potential ARP/IP spoofing or DDoS attacks by analyzing address mappings and packet frequency per unit time.
 
 **MacOS/Linux**
 ```bash
