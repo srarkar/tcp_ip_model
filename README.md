@@ -4,6 +4,8 @@ A small collection of tools and projects concerning the Internet Protocol Stack 
 
 <img src="https://github.com/user-attachments/assets/023aab52-8c1e-494b-bebc-3a9e56a1e6be" alt="drawing" width="500"/>
 
+The projects begin at the data link layer and work their way up to TCP sockets and HTTP requests.
+
 ---
 
 ## Directory Structure
@@ -73,7 +75,7 @@ python ip_geolocator/main.py [flags]
 #### Flags
 
 - `-n` : **Network sniffing** (default)  
-  Obtain IP addresses by sniffing packets on your local network.  
+  Obtain IP addresses by sniffing packets on your local network. Note that `sudo`/root permission is necessary for this setting.
   Example:  
   ```bash
   sudo python ip_geolocator/main.py -n
@@ -134,7 +136,7 @@ python ip_geolocator/main.py [flags]
 **Notes:**
 - You cannot use both `-n` and `-t`/`-d` at the same time.
 - You cannot use both `-m` and `-l` at the same time.
-- The output map will be saved as `ip_geolocator/output/ip_map.html`.
+- The output map will be saved in `ip_geolocator/output/ip_map.html`.
 
 ---
 
@@ -154,6 +156,7 @@ javac -cp "lib/exp4j-0.4.8.jar:lib/gson-2.13.1.jar" Server.java
 jar cfm Server.jar MANIFEST.MF Server.class
 java -jar Server.jar
 ```
+Once the server is running, now, we can connect to it from another terminal as the client.
 
 **Connect to the Server:**
 ```bash
@@ -163,8 +166,8 @@ telnet localhost 8080
 - Supported commands:
   - `/echo <message>`: Echoes your message.
   - `/math <expression>`: Evaluates a math expression (supports constants π, e, φ and operators +, -, *, /, ^, %).
-  - `/wiki <topic>`: Fetches a summary from Wikipedia.
-  - `/weather <location>`: (If implemented) Fetches weather info.
+  - `/wiki <topic>`: Fetches a summary from Wikipedia via the `Wikipedia REST API`.
+  - `/weather <location>`: Fetches weather info via `wttr.in`.
 
 ---
 
@@ -183,4 +186,3 @@ See [LICENSE](LICENSE) for details.
 
 ---
 
-Feel free to explore each folder for more details and usage instructions
