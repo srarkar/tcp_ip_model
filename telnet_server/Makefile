@@ -38,3 +38,19 @@ clean:
 	else \
 		echo "$(JARFILE) does not exist"; \
 	fi 
+
+
+# added compilation for Swing GUI file
+SWINGCLIENT = SwingClient
+SWINGSRC = $(SWINGCLIENT).java
+SWINGCLASS = $(SWINGCLIENT).class
+
+# Compile SwingClient.java
+$(SWINGCLASS): $(SWINGSRC)
+	@javac $(SWINGSRC)
+	@echo "$(SWINGSRC) compiled successfully"
+
+# Run Swing client
+run-client: $(SWINGCLASS)
+	@echo "Running Swing client..."
+	@java $(SWINGCLIENT) || test $$? -eq 130 
