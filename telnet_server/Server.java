@@ -54,7 +54,7 @@ public class Server {
                 String response;
                 while ((response = inBuffReader.readLine()) != null) {
                     if (response.equalsIgnoreCase("exit")) {
-                        outPrinter.println("Thanks for using the telnet server! - RS.");
+                        outPrinter.println("Thanks for using the telnet server! - RS");
                         System.out.println("Client exited.");
                         clientSocket.close();
                         break;
@@ -143,6 +143,11 @@ public class Server {
             HttpURLConnection conn = (HttpURLConnection) 
                 new URI(urlStr).toURL().openConnection();
             conn.setRequestMethod("GET");
+            
+            // this is required to prevent 403 errors. Reasoning found here: https://foundation.wikimedia.org/wiki/Policy:Wikimedia_Foundation_User-Agent_Policy 
+            conn.setRequestProperty("User-Agent", "tcp_ip_model/1.0 (https://github.com/yourusername/tcp_ip_model)");
+            // optional but allows for automatic redirection as opposed to manual handling
+            conn.setInstanceFollowRedirects(true);
 
             StringBuilder json;
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
@@ -153,10 +158,13 @@ public class Server {
                 }
             }
 
-            // parse JSON using Gson
+            // gson parses JSON
             JsonObject obj = JsonParser.parseString(json.toString()).getAsJsonObject();
             if (obj.has("extract")) {
-                return obj.get("extract").getAsString();
+                String summary = obj.get("extract").getAsString();
+                // add newlines for readability
+                summary = summary.replaceAll("([.!?])\\s+", "$1\n");
+                return summary;
             } else {
                 return "No summary found for: " + query;
             }
@@ -190,14 +198,13 @@ public class Server {
                     result.append(line);
                 }
             }
+            
 
             return result.toString();
         } catch (Exception e) {
             return "Weather lookup failed for location: " + location + " due to: " + e.getMessage();
         }
     }
-
-
 
 }
 
