@@ -158,12 +158,13 @@ javac -cp "lib/exp4j-0.4.8.jar:lib/gson-2.13.1.jar" Server.java
 jar cfm Server.jar MANIFEST.MF Server.class
 java -jar Server.jar
 ```
-Once the server is running, now, we can connect to it from another terminal as the client.
+Once the server is running, now, we can connect to it from another terminal (even on another device on the same LAN!) as the client.
 
 **Connect to the Server:**
 ```bash
-telnet localhost 8080
+make run-client
 ```
+You should see a Swing application open. Use the prompt at the bottom ">" to send messages and commands.
 - Type `exit` to disconnect.
 - Supported commands:
   - `/echo <message>`: Echoes your message.
@@ -184,7 +185,7 @@ See [LICENSE](LICENSE) for details.
 - Python 3.x (for Python tools)
 - Java 11+ (for Telnet server)
 - Python packages: see [requirements.txt](requirements.txt)
-- Java libraries: exp4j, gson (included in `telnet_server/lib/`)
+- Java libraries: exp4j, gson (included in `telnet_server/lib/` and bundled in Server.jar)
 
 ---
 
