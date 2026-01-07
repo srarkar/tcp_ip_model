@@ -174,18 +174,18 @@ You should see a Swing application open. Use the prompt at the bottom ">" to sen
 
 ---
 
-## License
-
-See [LICENSE](LICENSE) for details.
-
----
-
 ## Requirements
 
 - Python 3.x (for Python tools)
 - Java 11+ (for Telnet server)
 - Python packages: see [requirements.txt](requirements.txt)
 - Java libraries: exp4j, gson (included in `telnet_server/lib/` and bundled in Server.jar)
+
+---
+
+## License
+
+See [LICENSE](LICENSE) for details.
 
 ---
 
